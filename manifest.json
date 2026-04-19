@@ -1,0 +1,16 @@
+{
+  "name": "Cartify – Premium Store",
+  "short_name": "Cartify",
+  "description": "ร้านค้าออนไลน์สินค้าคุณภาพระดับพรีเมียม",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#8b5cf6",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "logo-color.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "logo-color.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "categories": ["shopping", "lifestyle"],
+  "lang": "th"
+}
