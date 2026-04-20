@@ -836,6 +836,11 @@ body.dark-mode #cursorGlow{background:radial-gradient(circle,rgba(196,181,253,.2
 @keyframes sparkleFloat{0%,100%{transform:translateY(0) rotate(0);opacity:.2}50%{transform:translateY(-18px) rotate(12deg);opacity:.55}}
 .reduce-motion .hero-sparkles i{animation:none}
 
+/* Payment logos — consistent chip-style in both themes */
+.pay-logo{display:inline-flex;align-items:center;justify-content:center;background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:5px;padding:3px 6px;box-shadow:0 1px 2px rgba(0,0,0,.04);transition:transform .2s ease,box-shadow .2s ease;vertical-align:middle}
+.pay-logo:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.12)}
+body.dark-mode .pay-logo,[data-bs-theme="dark"] .pay-logo{background:#fff;border-color:rgba(255,255,255,.12);box-shadow:0 2px 8px rgba(0,0,0,.3)}
+
 /* Global heading shimmer — apply to .display-6 headings */
 .display-6{position:relative}
 .display-6::after{content:'';position:absolute;left:50%;bottom:-8px;transform:translateX(-50%);width:60px;height:3px;background:linear-gradient(90deg,transparent,var(--accent),var(--accent2),transparent);border-radius:3px;background-size:200% 100%;animation:shimHeading 3s linear infinite;opacity:.8}
