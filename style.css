@@ -632,7 +632,7 @@ body.dark-mode .a11y-panel{background:#0f172a;border-color:#1e293b}
 @keyframes wobble{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
 .ei-body{padding:1.5rem}
 .wheel-wrap{position:relative;width:260px;height:260px;margin:0 auto}
-.wheel-wrap svg{width:100%;height:100%;filter:drop-shadow(0 8px 20px rgba(139,92,246,.3))}
+.wheel-wrap svg{width:100%;height:100%;filter:drop-shadow(0 8px 20px rgba(139,92,246,.3));transform-origin:50% 50%;transform-box:view-box;will-change:transform}
 .wheel-pointer{position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;border-top:22px solid #ef4444;filter:drop-shadow(0 2px 4px rgba(0,0,0,.3));z-index:1}
 .prize-box{background:linear-gradient(135deg,rgba(139,92,246,.1),rgba(236,72,153,.1));border:2px dashed var(--accent);border-radius:16px;padding:1.25rem;text-align:center}
 .prize-box code{background:var(--bg-light);padding:.3rem .6rem;border-radius:6px;color:var(--accent)}
@@ -640,7 +640,7 @@ body.dark-mode .a11y-panel{background:#0f172a;border-color:#1e293b}
 body.dark-mode .prize-box{background:linear-gradient(135deg,rgba(139,92,246,.2),rgba(236,72,153,.2))}
 
 /* ===== Bundle Hint Bar ===== */
-.bundle-hint{position:fixed;top:90px;left:50%;transform:translate(-50%,-100px);background:linear-gradient(90deg,#fef3c7,#fed7aa);color:#78350f;padding:.6rem 1.25rem;border-radius:99px;font-size:.85rem;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.15);z-index:1050;transition:transform .4s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;max-width:90vw;text-align:center}
+.bundle-hint{display:none!important;position:fixed;top:90px;left:50%;transform:translate(-50%,-100px);background:linear-gradient(90deg,#fef3c7,#fed7aa);color:#78350f;padding:.6rem 1.25rem;border-radius:99px;font-size:.85rem;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.15);z-index:1050;transition:transform .4s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;max-width:90vw;text-align:center}
 .bundle-hint.show{transform:translate(-50%,0)}
 body.dark-mode .bundle-hint{background:linear-gradient(90deg,#78350f,#92400e);color:#fef3c7}
 
@@ -1422,3 +1422,935 @@ body.dark-mode code, body.dark-mode pre {
 body.dark-mode img:not(.no-dim):not([class*="logo"]):not(.splash-logo):not(.nav-logo):not(.footer-logo) {
     filter: brightness(.95);
 }
+
+/* 42. View Transitions API — circular reveal on theme toggle */
+@supports (view-transition-name: none) {
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+        animation: none;
+        mix-blend-mode: normal;
+    }
+    ::view-transition-old(root) { z-index: 0 }
+    ::view-transition-new(root) { z-index: 1 }
+}
+/* 43. QR placeholder — adapt to dark so border+surface match */
+body.dark-mode .qr-placeholder {
+    background: #f8fafc;
+    border-color: rgba(139,92,246,.3);
+    color: #0f172a;
+    box-shadow: 0 0 0 1px rgba(139,92,246,.12), 0 8px 24px rgba(0,0,0,.5);
+}
+
+/* 44. Admin KPI pastel tiles — re-tint for dark so icon squares don't glare */
+body.dark-mode .admin-kpi .kpi-icon {
+    background: rgba(139,92,246,.14) !important;
+    box-shadow: inset 0 0 0 1px rgba(139,92,246,.18);
+}
+body.dark-mode .admin-kpi .kpi-icon i { filter: drop-shadow(0 0 6px currentColor) }
+
+/* 45. Payment pill backgrounds (inline pastels) — soften for dark */
+body.dark-mode .pm-icon {
+    background: rgba(139,92,246,.14) !important;
+    box-shadow: inset 0 0 0 1px rgba(139,92,246,.18);
+}
+
+/* 46. PDPA banner — already dark in both modes, but tighten contrast */
+body.dark-mode #pdpa-banner {
+    background: rgba(7,10,26,.96);
+    border-top-color: rgba(139,92,246,.22);
+}
+
+/* 47. Cart & discount text green — brighten in dark for WCAG */
+body.dark-mode [style*="color:#16a34a"],
+body.dark-mode [style*="color: #16a34a"] { color: #4ade80 !important }
+
+/* 48. FOUC preboot flag — kill any mid-load flash */
+html.dark-preboot body.dark-mode { background: transparent }
+
+/* 49. Announcement bar text visibility on dark */
+body.dark-mode .announcement-bar,
+body.dark-mode .announcement-bar .marquee-item { color: #e9ecf7 }
+
+/* 50. Flash-sale section already dark — no inversion needed; just polish border */
+body.dark-mode .flash-sale { border-top: 1px solid rgba(139,92,246,.12); border-bottom: 1px solid rgba(139,92,246,.12) }
+
+/* ============================================================
+   💎✨ WORLD-CLASS POLISH PASS — "most beautiful in the world"
+   Additive only. Targets existing elements, no layout changes.
+   ============================================================ */
+
+/* P1. Typography — finer kerning, optical sizing, ligatures, numeric tabular */
+html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; font-feature-settings: "ss01","cv11","kern","liga"; font-variant-numeric: oldstyle-nums proportional-nums }
+.countdown-num, .stat-number, .flash-price, [class*="price"], .fs-4, .fs-5, h1,h2,h3,h4 { font-variant-numeric: lining-nums tabular-nums }
+.hero-title, .display-1, .display-2, .display-3, .display-4, .display-5, .display-6 { letter-spacing: -.022em; font-feature-settings: "ss01","cv11" }
+p, .lead { text-wrap: pretty }
+h1,h2,h3,h4 { text-wrap: balance }
+
+/* P2. Global focus-visible — premium accessible ring */
+:where(a,button,[role="button"],input,select,textarea,[tabindex]):focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 8px;
+    box-shadow: 0 0 0 5px rgba(139,92,246,.18), 0 0 22px rgba(236,72,153,.25);
+    transition: outline-offset .12s ease, box-shadow .2s ease;
+}
+body.dark-mode :where(a,button,[role="button"],input,select,textarea,[tabindex]):focus-visible {
+    box-shadow: 0 0 0 5px rgba(139,92,246,.28), 0 0 28px rgba(236,72,153,.35);
+}
+
+/* P3. Selection — premium brand highlight */
+::selection { background: linear-gradient(135deg, rgba(139,92,246,.35), rgba(236,72,153,.35)); color: inherit; text-shadow: 0 0 12px rgba(139,92,246,.4) }
+body.dark-mode ::selection { background: rgba(196,181,253,.45); color: #fff }
+
+/* P4. Light-mode scrollbar — gradient thumb to match brand */
+::-webkit-scrollbar { width: 10px; height: 10px }
+::-webkit-scrollbar-track { background: transparent }
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--accent), var(--accent2));
+    border-radius: 10px;
+    border: 2px solid var(--bg-light);
+    transition: filter .2s;
+}
+::-webkit-scrollbar-thumb:hover { filter: brightness(1.15) }
+
+/* P5. Hero title — subtle letterspace + gradient polish on the accent word */
+.hero-title .gradient-text {
+    background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 50%, #06b6d4 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: gradSlide 8s ease-in-out infinite;
+    filter: drop-shadow(0 4px 18px rgba(139,92,246,.35));
+}
+@keyframes gradSlide { 0%,100% { background-position: 0% 50% } 50% { background-position: 100% 50% } }
+
+/* P6. Cards — unified premium elevation (additive, hover-only boost) */
+.premium-card, .category-box, .review-card, .rv-card, .reco-card, .glass-card, .stat-card, .team-card, .newsletter-card, .faq-accordion .accordion-item, .flash-card {
+    will-change: transform;
+    transition: transform .5s cubic-bezier(.34,1.56,.64,1), box-shadow .4s ease, border-color .4s ease;
+}
+.premium-card:hover { box-shadow: 0 30px 60px -18px rgba(139,92,246,.28), 0 12px 24px -10px rgba(236,72,153,.18), 0 0 0 1px rgba(139,92,246,.12) !important }
+.category-box:hover { box-shadow: 0 22px 48px -14px rgba(139,92,246,.25), 0 0 0 1px rgba(139,92,246,.18) !important }
+.review-card:hover { box-shadow: 0 24px 50px -16px rgba(236,72,153,.22), 0 0 0 1px rgba(236,72,153,.18) !important }
+body.dark-mode .premium-card:hover { box-shadow: 0 30px 60px -14px rgba(139,92,246,.5), 0 0 0 1px rgba(139,92,246,.3), 0 0 48px rgba(139,92,246,.22) !important }
+
+/* P7. Product card — animated conic gradient border on hover */
+.premium-card { position: relative; isolation: isolate }
+.premium-card::after {
+    content: "";
+    position: absolute; inset: -1px;
+    border-radius: inherit;
+    padding: 1.5px;
+    background: conic-gradient(from var(--a,0deg), #8b5cf6, #ec4899, #06b6d4, #8b5cf6);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    opacity: 0; transition: opacity .4s ease;
+    pointer-events: none; z-index: 2;
+}
+.premium-card:hover::after { opacity: 1; animation: conicSpin 5s linear infinite }
+@property --a { syntax: "<angle>"; inherits: false; initial-value: 0deg }
+@keyframes conicSpin { to { --a: 360deg } }
+@supports not (background: conic-gradient(from 0deg, red, blue)) { .premium-card::after { display: none } }
+
+/* P8. Buttons — sheen sweep on primary/gradient buttons */
+.btn, button { position: relative; overflow: hidden }
+.btn[style*="accent-grad"], .promo-btn, .pdpa-accept, .btn-accent, .btn-login, .chat-send, #backToTop, .cart-fab { position: relative; isolation: isolate }
+.btn[style*="accent-grad"]::before, .promo-btn::before, .pdpa-accept::before, .btn-accent::before, .btn-login::before {
+    content: "";
+    position: absolute; top: 0; left: -150%;
+    width: 80%; height: 100%;
+    background: linear-gradient(110deg, transparent 20%, rgba(255,255,255,.45) 50%, transparent 80%);
+    transform: skewX(-20deg);
+    transition: left .7s cubic-bezier(.23,1,.32,1);
+    z-index: 1; pointer-events: none;
+}
+.btn[style*="accent-grad"]:hover::before, .promo-btn:hover::before, .pdpa-accept:hover::before, .btn-accent:hover::before, .btn-login:hover::before { left: 160% }
+
+/* P9. Navigation — translucent frosted layer with inner glow */
+.premium-nav { backdrop-filter: blur(22px) saturate(180%); -webkit-backdrop-filter: blur(22px) saturate(180%) }
+.premium-nav.scrolled {
+    box-shadow: 0 6px 30px rgba(15,23,42,.08), 0 1px 0 rgba(139,92,246,.08) inset;
+    border-bottom: 1px solid rgba(139,92,246,.14) !important;
+}
+body.dark-mode .premium-nav.scrolled { box-shadow: 0 6px 30px rgba(0,0,0,.55), 0 1px 0 rgba(255,255,255,.04) inset }
+.nav-logo { transition: transform .4s cubic-bezier(.34,1.56,.64,1), filter .4s }
+.nav-logo:hover { transform: rotate(-6deg) scale(1.08); filter: drop-shadow(0 6px 14px rgba(139,92,246,.35)) }
+
+/* P10. Section headings — animated underline accent */
+h2.fw-bold, h2.display-5, h2.display-6 { position: relative; padding-bottom: .3em }
+section h2.text-center::after, section .text-center > h2::after {
+    content: ""; position: absolute; left: 50%; bottom: 0;
+    width: 72px; height: 3px; transform: translateX(-50%);
+    background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), transparent);
+    background-size: 200% 100%;
+    border-radius: 3px;
+    animation: shimHeading 3s linear infinite;
+    opacity: .85;
+}
+
+/* P11. Category icon — gradient-filled on hover with glow */
+.cat-icon { transition: transform .5s cubic-bezier(.34,1.56,.64,1), background .4s, color .4s, box-shadow .4s, border-color .4s }
+.category-box:hover .cat-icon {
+    transform: rotate(-6deg) scale(1.14);
+    box-shadow: 0 0 0 6px rgba(139,92,246,.12), 0 18px 36px -10px rgba(139,92,246,.5);
+}
+
+/* P12. Badge polish — soft glow + better contrast */
+.badge { letter-spacing: .02em; font-weight: 600; padding: .35em .75em; box-shadow: 0 2px 8px rgba(139,92,246,.15) }
+.badge.bg-danger { background: linear-gradient(135deg, #ef4444, #f97316) !important; box-shadow: 0 2px 10px rgba(239,68,68,.35) }
+.badge.bg-warning { background: linear-gradient(135deg, #f59e0b, #f97316) !important; box-shadow: 0 2px 10px rgba(245,158,11,.35); color: white !important }
+.badge.bg-success { background: linear-gradient(135deg, #22c55e, #10b981) !important; box-shadow: 0 2px 10px rgba(34,197,94,.35) }
+.badge.bg-info { background: linear-gradient(135deg, #06b6d4, #3b82f6) !important; box-shadow: 0 2px 10px rgba(6,182,212,.35); color: white !important }
+
+/* P13. Search — premium glow on focus */
+.search-box .form-control:focus { box-shadow: 0 0 0 4px rgba(139,92,246,.14), 0 8px 24px rgba(139,92,246,.18) }
+
+/* P14. Form controls — soft glass feel in light mode too */
+.form-control, .form-select {
+    transition: border-color .25s ease, box-shadow .25s ease, background .25s ease;
+}
+.form-control:focus, .form-select:focus {
+    box-shadow: 0 0 0 4px rgba(139,92,246,.15), 0 4px 16px rgba(139,92,246,.12) !important;
+    border-color: var(--accent) !important;
+}
+
+/* P15. Aurora blobs — enrich light mode (richer) */
+.aurora-blob { mix-blend-mode: screen }
+body:not(.dark-mode) .aurora-blob { mix-blend-mode: multiply; opacity: .28 }
+
+/* P16. Testimonials section — mesh gradient light mode */
+.testimonials {
+    background:
+        radial-gradient(600px 400px at 10% 10%, rgba(139,92,246,.06), transparent 60%),
+        radial-gradient(500px 350px at 90% 90%, rgba(236,72,153,.05), transparent 55%),
+        var(--bg-light);
+}
+
+/* P17. Footer — aurora underlay */
+.footer-premium { position: relative; overflow: hidden }
+.footer-premium::before {
+    content: "";
+    position: absolute; inset: 0;
+    background:
+        radial-gradient(700px 400px at 10% 0%, rgba(139,92,246,.12), transparent 60%),
+        radial-gradient(600px 350px at 90% 100%, rgba(236,72,153,.1), transparent 55%);
+    pointer-events: none;
+}
+.footer-premium > * { position: relative; z-index: 1 }
+
+/* P18. Dark toggle — inner glow when active */
+.dark-toggle { box-shadow: inset 0 1px 0 rgba(255,255,255,.5), 0 2px 6px rgba(0,0,0,.04); transition: background .45s ease, border-color .45s ease, box-shadow .3s }
+body.dark-mode .dark-toggle { box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 0 24px rgba(139,92,246,.45) }
+.dark-toggle:hover { transform: translateY(-1px); filter: brightness(1.05) }
+
+/* P19. Flash sale — cosmic shimmer on background */
+.flash-sale::after {
+    content: "";
+    position: absolute; inset: 0;
+    background:
+        radial-gradient(500px 300px at 15% 25%, rgba(139,92,246,.25), transparent 55%),
+        radial-gradient(450px 280px at 85% 75%, rgba(236,72,153,.22), transparent 55%);
+    pointer-events: none; z-index: 0;
+}
+.flash-sale > * { position: relative; z-index: 1 }
+
+/* P20. Admin KPI — gradient accent strip on top */
+.admin-kpi { position: relative; overflow: hidden }
+.admin-kpi::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    opacity: .8;
+}
+
+/* P21. Team card — refined floating shadow + photo glow */
+.team-card { transition: transform .55s cubic-bezier(.34,1.56,.64,1), box-shadow .5s }
+.team-card:hover { transform: translateY(-8px) rotateX(2deg) }
+.team-photo-frame { transition: transform .6s cubic-bezier(.34,1.56,.64,1), box-shadow .5s }
+.team-card:hover .team-photo-frame { box-shadow: 0 18px 40px rgba(139,92,246,.4), 0 0 0 6px rgba(139,92,246,.12) }
+
+/* P22. Accordion FAQ — softer expand */
+.faq-accordion .accordion-button { transition: background .35s, color .35s, padding .35s }
+.faq-accordion .accordion-button:not(.collapsed) { padding-left: 1.5rem; padding-right: 1.5rem }
+.faq-accordion .accordion-button::after { transition: transform .4s cubic-bezier(.34,1.56,.64,1), filter .3s }
+.faq-accordion .accordion-button:not(.collapsed)::after { filter: drop-shadow(0 0 6px rgba(139,92,246,.5)) }
+
+/* P23. Review stars — subtle glow */
+.review-stars { text-shadow: 0 0 12px rgba(245,158,11,.35) }
+
+/* P24. Chat bot — softer entrance */
+.chat-fab { backdrop-filter: blur(8px); transition: transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s }
+.chat-fab:hover { box-shadow: 0 14px 32px rgba(139,92,246,.55) }
+
+/* P25. Smooth section edge (no harsh lines) */
+section + section { position: relative }
+section + section::before {
+    content: ""; position: absolute; top: -1px; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(139,92,246,.18), transparent);
+    pointer-events: none;
+}
+body.dark-mode section + section::before { background: linear-gradient(90deg, transparent, rgba(139,92,246,.3), transparent) }
+
+/* P26. Image lazy reveal — blur-to-sharp on enter */
+.premium-card img, .flash-card img, .rv-card img, .reco-card img, .team-photo {
+    transition: transform .6s cubic-bezier(.25,.46,.45,.94), filter .5s ease;
+}
+.premium-card:not(:hover) img[loading="lazy"]:not(.loaded) { filter: blur(6px); transform: scale(1.02) }
+
+/* P27. Price text — tabular alignment + gradient polish */
+[style*="text-accent"], .text-accent, .flash-price, #cart-total {
+    font-variant-numeric: lining-nums tabular-nums;
+    letter-spacing: -.01em;
+}
+
+/* P28. Cart dropdown — richer shadow */
+.cart-dropdown { box-shadow: 0 30px 80px -20px rgba(139,92,246,.28), 0 12px 30px -10px rgba(0,0,0,.12) }
+body.dark-mode .cart-dropdown { box-shadow: 0 40px 90px -20px rgba(0,0,0,.7), 0 0 0 1px rgba(139,92,246,.18) !important }
+
+/* P29. Back-to-top — breathing glow */
+#backToTop { animation: backTopPulse 2.4s ease-in-out infinite }
+@keyframes backTopPulse {
+    0%,100% { box-shadow: 0 8px 22px rgba(139,92,246,.4) }
+    50% { box-shadow: 0 8px 32px rgba(139,92,246,.55), 0 0 0 6px rgba(139,92,246,.1) }
+}
+.reduce-motion #backToTop { animation: none }
+
+/* P30. Payment method hover — lift with colored glow */
+.payment-method-btn { transition: transform .3s, border-color .3s, background .3s, box-shadow .3s }
+.payment-method-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 24px -6px rgba(139,92,246,.25) }
+
+/* P31. Modal — premium entrance */
+.modal.show .modal-dialog { animation: modalIn .5s cubic-bezier(.34,1.56,.64,1) }
+@keyframes modalIn { from { transform: translateY(24px) scale(.96); opacity: 0 } to { transform: none; opacity: 1 } }
+.reduce-motion .modal.show .modal-dialog { animation: none }
+
+/* P32. Announcement bar — subtle gradient sheen */
+.announcement-bar { position: relative; overflow: hidden }
+.announcement-bar::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.06), transparent);
+    animation: marqueeShine 6s linear infinite;
+    pointer-events: none;
+}
+@keyframes marqueeShine { 0% { transform: translateX(-100%) } 100% { transform: translateX(100%) } }
+
+/* P33. Social buttons — refined hover lift with colored shadow */
+.social-btn, .team-social a { transition: transform .35s cubic-bezier(.34,1.56,.64,1), background .35s, color .35s, box-shadow .35s }
+
+/* P34. Tooltips via title — use native + upgrade cursor */
+[title]:not(button):not(input) { cursor: help }
+
+/* P35. Progress bar — refined color layers */
+#progress-bar {
+    height: 3px !important;
+    background: linear-gradient(90deg, #8b5cf6, #ec4899, #06b6d4, #8b5cf6) !important;
+    background-size: 300% 100% !important;
+    animation: progressShine 4s linear infinite;
+}
+@keyframes progressShine { 0% { background-position: 0% 0 } 100% { background-position: -300% 0 } }
+
+/* P36. Stat number — bigger impact */
+.stat-number { letter-spacing: -.02em; filter: drop-shadow(0 2px 8px rgba(139,92,246,.25)) }
+
+/* P37. Quick view modal images — tasty rounded corners */
+.quickview-img { border-radius: 16px }
+
+/* P38. Disabled state — unified */
+:disabled, [aria-disabled="true"] { opacity: .5; cursor: not-allowed; filter: grayscale(.2) }
+
+/* P39. Reduced motion safety — disable the heavy ones */
+.reduce-motion .hero-title .gradient-text,
+.reduce-motion .premium-card::after,
+.reduce-motion #backToTop,
+.reduce-motion .announcement-bar::after,
+.reduce-motion #progress-bar { animation: none !important }
+
+/* P40. Final touch — smooth body font-weight transition on toggle */
+body { transition: background .4s, color .4s, font-weight 0s }
+
+/* ============================================================
+   🔆 LIGHT-MODE RESCUE — sections previously "stuck on night"
+   Applies ONLY when body is not in dark mode. Dark mode keeps its own look.
+   ============================================================ */
+
+/* L1. Announcement bar — was `var(--primary)` (slate-900). Now brand-tinted light */
+body:not(.dark-mode) .announcement-bar {
+    background: linear-gradient(90deg, rgba(139,92,246,.12), rgba(236,72,153,.10), rgba(6,182,212,.12));
+    color: #1e1b4b;
+    border-bottom: 1px solid rgba(139,92,246,.18);
+}
+body:not(.dark-mode) .announcement-bar .marquee-item { color: #1e1b4b }
+body:not(.dark-mode) .announcement-bar a { color: var(--accent); font-weight: 700 }
+
+/* L2. Flash sale — was dark gradient `#1a0e2e → #0f172a`. Now lavender/rose aurora */
+body:not(.dark-mode) .flash-sale {
+    background:
+        radial-gradient(700px 500px at 10% 10%, rgba(139,92,246,.18), transparent 55%),
+        radial-gradient(600px 450px at 90% 90%, rgba(236,72,153,.16), transparent 55%),
+        linear-gradient(135deg, #faf5ff 0%, #fef3f9 50%, #eff6ff 100%);
+}
+body:not(.dark-mode) .flash-sale::after {
+    background:
+        radial-gradient(500px 300px at 15% 25%, rgba(139,92,246,.14), transparent 55%),
+        radial-gradient(450px 280px at 85% 75%, rgba(236,72,153,.12), transparent 55%);
+}
+body:not(.dark-mode) .flash-sale h2,
+body:not(.dark-mode) .flash-sale [style*="color:white"],
+body:not(.dark-mode) .flash-sale [style*="color: white"] { color: #1e1b4b !important }
+body:not(.dark-mode) .flash-sale p,
+body:not(.dark-mode) .flash-sale [style*="rgba(255,255,255"] { color: #64748b !important }
+body:not(.dark-mode) .flash-sale .countdown-box {
+    background: rgba(255,255,255,.85);
+    border: 1px solid rgba(139,92,246,.18);
+    box-shadow: 0 8px 20px rgba(139,92,246,.1);
+    backdrop-filter: blur(8px);
+}
+body:not(.dark-mode) .flash-sale .countdown-num { color: #1e1b4b; text-shadow: none }
+body:not(.dark-mode) .flash-sale .countdown-label { color: #64748b }
+body:not(.dark-mode) .flash-sale .flash-card {
+    background: rgba(255,255,255,.92);
+    border: 1px solid rgba(139,92,246,.16);
+    backdrop-filter: blur(8px);
+}
+body:not(.dark-mode) .flash-sale .flash-card:hover {
+    background: rgba(255,255,255,.98);
+    border-color: rgba(139,92,246,.35);
+    box-shadow: 0 20px 40px -12px rgba(139,92,246,.22);
+}
+body:not(.dark-mode) .flash-sale .flash-name { color: #1e1b4b }
+body:not(.dark-mode) .flash-sale .flash-price-old { color: #94a3b8 }
+body:not(.dark-mode) .flash-sale .flash-progress { background: rgba(139,92,246,.15) }
+
+/* L3. Features section — was `var(--feature-bg)` = `#0f172a`. Now brand-tinted light */
+body:not(.dark-mode) .feature-section {
+    background:
+        radial-gradient(600px 400px at 20% 20%, rgba(139,92,246,.12), transparent 60%),
+        radial-gradient(500px 350px at 80% 80%, rgba(236,72,153,.1), transparent 55%),
+        linear-gradient(135deg, #faf5ff, #eff6ff);
+    color: #1e1b4b !important;
+    border-top: 1px solid rgba(139,92,246,.14);
+}
+body:not(.dark-mode) .feature-section.text-white,
+body:not(.dark-mode) .feature-section .text-white { color: #1e1b4b !important }
+body:not(.dark-mode) .feature-section .text-white-50 { color: #64748b !important }
+body:not(.dark-mode) .feature-section h4 { color: #1e1b4b !important }
+body:not(.dark-mode) .feature-section .feature-icon-wrapper {
+    background: rgba(139,92,246,.1);
+    color: var(--accent);
+    box-shadow: inset 0 0 16px rgba(139,92,246,.08);
+}
+body:not(.dark-mode) .feature-section .feature-item:hover .feature-icon-wrapper {
+    background: var(--accent-grad);
+    color: #fff;
+    box-shadow: 0 12px 28px rgba(139,92,246,.3);
+}
+
+/* L4. PDPA banner — was hardcoded `rgba(15,23,42,.97)`. Now white glass */
+body:not(.dark-mode) #pdpa-banner {
+    background: rgba(255,255,255,.96);
+    backdrop-filter: blur(14px) saturate(180%);
+    border-top: 1px solid rgba(139,92,246,.18);
+    box-shadow: 0 -10px 40px rgba(139,92,246,.12);
+}
+body:not(.dark-mode) #pdpa-banner p { color: #334155 }
+body:not(.dark-mode) .pdpa-decline { color: #64748b; border-color: rgba(15,23,42,.15) }
+body:not(.dark-mode) .pdpa-decline:hover { background: rgba(139,92,246,.05); color: var(--accent) }
+
+/* L5. Compare bar — was dark slate gradient. Now light glass */
+body:not(.dark-mode) #compareBar {
+    background: linear-gradient(135deg, rgba(255,255,255,.96), rgba(250,245,255,.96));
+    backdrop-filter: blur(14px) saturate(180%);
+    box-shadow: 0 -10px 40px rgba(139,92,246,.15);
+    border-top: 2px solid var(--accent);
+    color: var(--primary);
+}
+body:not(.dark-mode) #compareBar .cmp-thumb { border-color: rgba(139,92,246,.25) }
+body:not(.dark-mode) #compareBar .cmp-thumb button { border-color: #fff }
+
+/* L6. Exit-intent overlay — was dark slate 70% opacity. Keep darkish for modal focus */
+body:not(.dark-mode) #exitIntent { background: rgba(30,27,75,.55); backdrop-filter: blur(10px) saturate(160%) }
+
+/* L7. A11y FAB — purple accent in both modes (already OK via var(--primary) was too dark) */
+body:not(.dark-mode) .a11y-fab {
+    background: var(--accent-grad);
+    box-shadow: 0 10px 28px rgba(139,92,246,.4);
+}
+
+/* L8. Chat FAB.active — keep brand accent, not slate */
+body:not(.dark-mode) .chat-fab.active {
+    background: linear-gradient(135deg, #64748b, #334155);
+}
+
+/* L9. btn-filter.active (pill) — use accent gradient in light, not `var(--primary)` slate */
+body:not(.dark-mode) .btn-filter.active {
+    background: var(--accent-grad);
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 6px 18px rgba(139,92,246,.35);
+}
+
+/* L10. btn-icon hover — use accent instead of flat slate */
+body:not(.dark-mode) .btn-icon:hover {
+    background: var(--accent-grad) !important;
+    color: #fff;
+    box-shadow: 0 6px 18px rgba(139,92,246,.35);
+}
+
+/* L11. Navbar toggle icon — keep visible on light bg */
+body:not(.dark-mode) .navbar-toggler i { color: var(--primary) }
+
+/* L12. Size button hover/active — accent fill (already OK). Just smoother shadow */
+body:not(.dark-mode) .size-btn:hover,
+body:not(.dark-mode) .size-btn.active { box-shadow: 0 6px 18px rgba(139,92,246,.3) }
+
+/* L13. Feature-section text color inline override guard — ensure p tags inherit */
+body:not(.dark-mode) .feature-section p,
+body:not(.dark-mode) .feature-section small { color: inherit }
+
+/* L14. Admin topbar — currently uses var(--surface) white (OK). Just add subtle gradient */
+body:not(.dark-mode) .admin-topbar {
+    background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(250,245,255,.95));
+    backdrop-filter: blur(12px);
+}
+
+/* ============================================================
+   🌠 DELUXE FX — 3D tilt · scroll-driven reveal · char animate
+   ============================================================ */
+
+/* D1. Card tilt base — 3D transform prep, GPU-accelerated */
+.premium-card, .category-box, .review-card, .reco-card, .rv-card, .flash-card, .team-card {
+    transform-style: preserve-3d;
+    transition: transform .5s cubic-bezier(.34,1.56,.64,1), box-shadow .4s ease, border-color .4s ease;
+    will-change: transform;
+}
+
+/* D2. Card spotlight — radial gradient follows cursor (uses --mx/--my set by JS) */
+.premium-card::before, .category-box::before, .review-card::before, .reco-card::before, .rv-card::before, .flash-card::before {
+    content: "";
+    position: absolute; inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(360px circle at var(--mx,50%) var(--my,50%), rgba(139,92,246,.18), transparent 50%);
+    opacity: 0;
+    transition: opacity .4s ease;
+    pointer-events: none;
+    z-index: 1;
+    mix-blend-mode: plus-lighter;
+}
+.premium-card:hover::before, .category-box:hover::before, .review-card:hover::before, .reco-card:hover::before, .rv-card:hover::before, .flash-card:hover::before {
+    opacity: 1;
+}
+body.dark-mode .premium-card::before, body.dark-mode .category-box::before, body.dark-mode .review-card::before, body.dark-mode .reco-card::before, body.dark-mode .rv-card::before, body.dark-mode .flash-card::before {
+    background: radial-gradient(360px circle at var(--mx,50%) var(--my,50%), rgba(196,181,253,.22), transparent 50%);
+}
+.premium-card, .category-box, .review-card, .reco-card, .rv-card, .flash-card { position: relative; isolation: isolate }
+.premium-card > *, .category-box > *, .review-card > *, .reco-card > *, .rv-card > *, .flash-card > * { position: relative; z-index: 2 }
+
+/* D3. Tilt safety — disable on touch/small screens */
+@media (hover: none), (max-width: 991.98px) {
+    .premium-card, .category-box, .review-card, .reco-card, .rv-card, .flash-card, .team-card {
+        transform: none !important;
+    }
+}
+.reduce-motion .premium-card, .reduce-motion .category-box, .reduce-motion .review-card,
+.reduce-motion .reco-card, .reduce-motion .rv-card, .reduce-motion .flash-card, .reduce-motion .team-card {
+    transform: none !important;
+}
+
+/* D4. Character reveal — hero title characters cascade on load / lang change */
+.char-reveal {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(32px) scale(.92);
+    filter: blur(10px);
+    animation: charReveal .8s cubic-bezier(.22,1,.36,1) both;
+    animation-delay: calc(var(--i, 0) * 38ms);
+    will-change: opacity, transform, filter;
+}
+@keyframes charReveal {
+    to { opacity: 1; transform: none; filter: blur(0) }
+}
+.reduce-motion .char-reveal { animation: none; opacity: 1; transform: none; filter: none }
+
+/* D5. Scroll-driven animations — modern browsers only, progressive enhancement */
+@supports (animation-timeline: view()) {
+
+    /* D5a. Hero shapes — gentle parallax tied to page scroll */
+    .hero-section .shape-1 {
+        animation: shapeParallax1 linear both;
+        animation-timeline: scroll(root);
+        animation-range: 0 100vh;
+    }
+    .hero-section .shape-2 {
+        animation: shapeParallax2 linear both;
+        animation-timeline: scroll(root);
+        animation-range: 0 100vh;
+    }
+    .hero-section .shape-3 {
+        animation: shapeParallax3 linear both;
+        animation-timeline: scroll(root);
+        animation-range: 0 100vh;
+    }
+    @keyframes shapeParallax1 { to { transform: translate3d(40px, 180px, 0) rotate(14deg) scale(1.1) } }
+    @keyframes shapeParallax2 { to { transform: translate3d(-50px, -120px, 0) rotate(-12deg) scale(.9) } }
+    @keyframes shapeParallax3 { to { transform: translate3d(70px, 90px, 0) rotate(20deg) scale(1.15) } }
+
+    /* D5b. Section headings — blur-to-sharp on entry */
+    section h2.fw-bold,
+    section h2.display-6,
+    section h2.display-5 {
+        animation: headingEnter linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 20%;
+    }
+    @keyframes headingEnter {
+        from { opacity: 0; transform: translateY(40px) scale(.96); filter: blur(10px); letter-spacing: .04em }
+        to   { opacity: 1; transform: none; filter: blur(0); letter-spacing: -.022em }
+    }
+
+    /* D5c. Product / category / review cards — rise + fade on entry */
+    .premium-card, .category-box, .review-card, .reco-card, .rv-card, .flash-card, .stat-card {
+        animation: cardRise linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 20%;
+    }
+    @keyframes cardRise {
+        from { opacity: 0; transform: translateY(60px) scale(.94); filter: blur(6px) }
+        to   { opacity: 1; transform: none; filter: blur(0) }
+    }
+
+    /* D5d. Card images — subtle zoom while in viewport */
+    .card-img-wrapper img,
+    .rv-card img,
+    .reco-card img,
+    .flash-card img {
+        animation: imgZoomScroll linear both;
+        animation-timeline: view();
+        animation-range: entry 0% exit 100%;
+    }
+    @keyframes imgZoomScroll {
+        from { transform: scale(1.08) translateY(-2%) }
+        to   { transform: scale(1) translateY(2%) }
+    }
+
+    /* D5e. Team photos — scale-down reveal as team section enters */
+    .team-photo-wrap {
+        animation: teamPhotoEnter linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 30%;
+    }
+    @keyframes teamPhotoEnter {
+        from { opacity: 0; transform: scale(.7) rotate(-6deg); filter: blur(8px) }
+        to   { opacity: 1; transform: scale(1) rotate(0); filter: blur(0) }
+    }
+
+    /* D5f. Testimonial cards stagger from alternating sides */
+    .review-card { animation-name: cardRise !important }
+    .testimonials .col-md-4:nth-child(odd) .review-card {
+        animation: reviewInL linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 25%;
+    }
+    .testimonials .col-md-4:nth-child(even) .review-card {
+        animation: reviewInR linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 25%;
+    }
+    @keyframes reviewInL { from { opacity: 0; transform: translateX(-40px) rotate(-2deg); filter: blur(6px) } to { opacity: 1; transform: none; filter: blur(0) } }
+    @keyframes reviewInR { from { opacity: 0; transform: translateX(40px) rotate(2deg); filter: blur(6px) } to { opacity: 1; transform: none; filter: blur(0) } }
+
+    /* D5g. Feature icons — pop + spin on entry */
+    .feature-icon-wrapper {
+        animation: featurePop linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 35%;
+    }
+    @keyframes featurePop {
+        from { opacity: 0; transform: scale(.5) rotate(-45deg); filter: blur(6px) }
+        to   { opacity: 1; transform: scale(1) rotate(0); filter: blur(0) }
+    }
+
+    /* D5h. Footer — fade in on approach */
+    .footer-premium {
+        animation: footerEnter linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 40%;
+    }
+    @keyframes footerEnter {
+        from { opacity: .5; transform: translateY(30px) }
+        to   { opacity: 1; transform: none }
+    }
+
+    /* D5i. Reduced-motion override — kill all scroll-linked animation */
+    .reduce-motion * { animation-timeline: none !important }
+}
+
+/* ================================================================
+   BS5 GLOSS — Bootstrap components dipped in Cartify theme
+   ================================================================ */
+
+/* --- Tooltip --- */
+.cartify-tooltip.tooltip { --bs-tooltip-bg: transparent; --bs-tooltip-color: #fff; --bs-tooltip-padding-x: 0; --bs-tooltip-padding-y: 0; --bs-tooltip-font-size: .78rem; --bs-tooltip-border-radius: 12px; --bs-tooltip-opacity: 1; filter: drop-shadow(0 8px 24px rgba(139,92,246,.35)) }
+.cartify-tooltip .tooltip-inner { background: linear-gradient(135deg, #1e1b4b, #312e81); border: 1px solid rgba(139,92,246,.4); padding: .45rem .85rem; font-weight: 600; letter-spacing: .01em; border-radius: 12px; backdrop-filter: blur(10px); position: relative; overflow: hidden }
+.cartify-tooltip .tooltip-inner::before { content:""; position:absolute; inset:0; background: linear-gradient(135deg, rgba(139,92,246,.2), rgba(236,72,153,.12)); pointer-events:none }
+.cartify-tooltip .tooltip-arrow::before { border-top-color: #312e81 !important; border-bottom-color: #1e1b4b !important; border-left-color: #1e1b4b !important; border-right-color: #312e81 !important }
+body.dark-mode .cartify-tooltip .tooltip-inner { background: linear-gradient(135deg, rgba(139,92,246,.95), rgba(236,72,153,.9)); border-color: rgba(255,255,255,.15) }
+
+/* --- Toast (sheen + glow) --- */
+.premium-toast { border-radius: 14px; border: 1px solid rgba(139,92,246,.25); box-shadow: 0 18px 42px rgba(15,23,42,.32), 0 0 0 1px rgba(255,255,255,.05) inset; backdrop-filter: blur(14px); overflow: hidden; position: relative }
+.premium-toast::before { content:""; position:absolute; inset:-1px; border-radius:inherit; background: linear-gradient(135deg, rgba(139,92,246,.35), transparent 40%, rgba(236,72,153,.25)); pointer-events:none; -webkit-mask: linear-gradient(#000,#000) content-box, linear-gradient(#000,#000); -webkit-mask-composite: xor; mask-composite: exclude; padding: 1px; opacity:.8 }
+.premium-toast.text-bg-dark { background: linear-gradient(135deg, rgba(15,23,42,.96), rgba(30,27,75,.96)) !important }
+
+/* --- Progress (free-ship) --- */
+.ship-progress .progress { background: rgba(139,92,246,.12); border-radius: 99px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(15,23,42,.12) }
+.ship-progress .progress-bar { background: linear-gradient(90deg, #8b5cf6, #ec4899, #f59e0b); background-size: 200% 100%; animation: shipSheen 2.4s linear infinite; border-radius: 99px }
+.ship-progress.ship-done .progress-bar { background: linear-gradient(90deg, #10b981, #22c55e); animation: none }
+@keyframes shipSheen { from { background-position: 200% 0 } to { background-position: -200% 0 } }
+body.dark-mode .ship-progress .progress { background: rgba(139,92,246,.2) }
+
+/* --- Breadcrumb --- */
+.cartify-breadcrumb { --bs-breadcrumb-divider: '›'; --bs-breadcrumb-divider-color: var(--accent); --bs-breadcrumb-item-padding-x: .6rem; background: rgba(139,92,246,.06); border: 1px solid rgba(139,92,246,.14); border-radius: 99px; padding: .5rem 1.1rem; display: inline-flex; align-items: center; backdrop-filter: blur(6px) }
+.cartify-breadcrumb .breadcrumb-item a { color: var(--secondary); text-decoration: none; font-size: .85rem; font-weight: 500; transition: color .2s }
+.cartify-breadcrumb .breadcrumb-item a:hover { color: var(--accent) }
+.cartify-breadcrumb .breadcrumb-item.active { color: var(--primary); font-weight: 700; font-size: .85rem }
+.cartify-breadcrumb .breadcrumb-item + .breadcrumb-item::before { color: var(--accent); font-weight: 700; opacity: .7 }
+body.dark-mode .cartify-breadcrumb { background: rgba(139,92,246,.12); border-color: rgba(139,92,246,.26) }
+body.dark-mode .cartify-breadcrumb .breadcrumb-item a { color: #cbd5e1 }
+body.dark-mode .cartify-breadcrumb .breadcrumb-item.active { color: #f8fafc }
+
+/* --- Skeleton (placeholder-glow) --- */
+.skeleton-img { display:block; width:100%; aspect-ratio: 1/1; border-top-left-radius: var(--radius-md); border-top-right-radius: var(--radius-md); background: linear-gradient(135deg, #ede9fe, #fce7f3) }
+body.dark-mode .skeleton-img { background: linear-gradient(135deg, rgba(139,92,246,.18), rgba(236,72,153,.12)) }
+.placeholder { background: linear-gradient(90deg, rgba(139,92,246,.18), rgba(236,72,153,.12), rgba(139,92,246,.18)); background-size: 200% 100% }
+
+/* --- Filter offcanvas --- */
+.cartify-filter-offcanvas { --bs-offcanvas-width: 380px; --bs-offcanvas-bg: var(--surface); --bs-offcanvas-color: var(--text); --bs-offcanvas-border-color: rgba(139,92,246,.18); border-left: 1px solid rgba(139,92,246,.18); box-shadow: -24px 0 60px rgba(15,23,42,.22) }
+.cartify-filter-offcanvas .offcanvas-header { border-bottom: 1px solid rgba(139,92,246,.12); padding: 1.2rem 1.4rem; background: linear-gradient(135deg, rgba(139,92,246,.08), rgba(236,72,153,.05)) }
+.cartify-filter-offcanvas .offcanvas-body { padding: 1.2rem 1.4rem }
+.cartify-filter-offcanvas .filter-section { padding: 1rem 0; border-bottom: 1px dashed rgba(139,92,246,.15) }
+.cartify-filter-offcanvas .filter-section:last-of-type { border-bottom: 0 }
+.cartify-filter-offcanvas .btn-close { filter: none; transition: transform .2s }
+.cartify-filter-offcanvas .btn-close:hover { transform: rotate(90deg) }
+body.dark-mode .cartify-filter-offcanvas { --bs-offcanvas-bg: #0f172a; --bs-offcanvas-color: #f1f5f9 }
+body.dark-mode .cartify-filter-offcanvas .btn-close { filter: invert(1) grayscale(100%) brightness(2) }
+
+/* --- List-group (filter cats) --- */
+.cartify-filter-list .list-group-item { background: transparent; border: 0; padding: .7rem .5rem; border-radius: 10px; color: var(--primary); font-weight: 600; font-size: .9rem; transition: background .2s, transform .2s; text-align: left }
+.cartify-filter-list .list-group-item:hover { background: linear-gradient(90deg, rgba(139,92,246,.08), rgba(236,72,153,.04)); transform: translateX(4px) }
+.cartify-filter-list .list-group-item:hover .bi-chevron-right { transform: translateX(4px); color: var(--accent) !important }
+.cartify-filter-list .list-group-item .bi-chevron-right { transition: transform .2s, color .2s }
+body.dark-mode .cartify-filter-list .list-group-item { color: #f1f5f9 }
+
+/* Gradient button helper used in offcanvas */
+.btn-accent-grad { background: var(--accent-grad); color: #fff; border: none; transition: transform .2s, box-shadow .2s }
+.btn-accent-grad:hover { color: #fff; transform: translateY(-2px); box-shadow: 0 10px 24px rgba(139,92,246,.35) }
+
+/* Filter badge dot on sliders trigger */
+.filter-badge { position: absolute; top: 4px; right: 4px; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 0 2px var(--surface) }
+
+/* --- Promo input-group --- */
+.promo-group { border-radius: 99px; overflow: hidden; box-shadow: 0 4px 12px rgba(139,92,246,.12); border: 1px solid rgba(139,92,246,.18); background: var(--surface) }
+.promo-group .promo-addon { background: transparent; border: 0; padding-left: 1rem }
+.promo-group .promo-input { background: transparent; border: 0; font-size: .85rem; font-weight: 600 }
+.promo-group .promo-input:focus { box-shadow: none; outline: none }
+.promo-group .promo-btn { background: var(--accent-grad); color: #fff; border: 0; padding: 0 1.2rem; font-size: .82rem; border-radius: 0 !important; transition: filter .2s }
+.promo-group .promo-btn:hover { filter: brightness(1.1); color: #fff }
+body.dark-mode .promo-group { background: rgba(13,19,38,.7); border-color: rgba(139,92,246,.3) }
+
+/* --- Newsletter input-group --- */
+.newsletter-input-group { border-radius: 99px; overflow: hidden; box-shadow: 0 12px 32px rgba(139,92,246,.18); background: #fff }
+.newsletter-input-group .form-control { font-size: 1rem; padding: .9rem 1rem; background: #fff }
+.newsletter-input-group .form-control:focus { box-shadow: none; outline: none; background: #fff }
+.newsletter-input-group .newsletter-addon { padding-left: 1.5rem }
+.newsletter-input-group .newsletter-btn { background: var(--accent-grad); color: #fff; border: 0; font-size: 1rem; border-radius: 0 !important }
+.newsletter-input-group .newsletter-btn:hover { color: #fff; filter: brightness(1.08) }
+body.dark-mode .newsletter-input-group { background: rgba(13,19,38,.8) }
+body.dark-mode .newsletter-input-group .form-control,
+body.dark-mode .newsletter-input-group .newsletter-addon { background: rgba(13,19,38,.8); color: #f1f5f9 }
+
+/* --- Testimonials carousel (responsive 3-col on lg+) --- */
+.cartify-testimonials { padding: 0 1rem }
+.cartify-testimonials .carousel-item { transition: transform .6s ease-in-out, opacity .6s }
+.cartify-testimonials .review-card { margin: 0 .5rem }
+.cartify-testimonials .carousel-control-prev,
+.cartify-testimonials .carousel-control-next { width: 44px; height: 44px; top: 50%; transform: translateY(-50%); background: var(--accent-grad); border-radius: 50%; opacity: 1; box-shadow: 0 8px 24px rgba(139,92,246,.35); transition: transform .25s }
+.cartify-testimonials .carousel-control-prev { left: -22px }
+.cartify-testimonials .carousel-control-next { right: -22px }
+.cartify-testimonials .carousel-control-prev:hover,
+.cartify-testimonials .carousel-control-next:hover { transform: translateY(-50%) scale(1.1) }
+.cartify-testimonials .carousel-control-prev-icon,
+.cartify-testimonials .carousel-control-next-icon { width: 18px; height: 18px; filter: brightness(10) }
+.cartify-testimonials .carousel-indicators { bottom: -42px; margin-bottom: 0 }
+.cartify-testimonials .carousel-indicators [data-bs-target] { width: 10px; height: 10px; border-radius: 50%; background: rgba(139,92,246,.25); border: 0; margin: 0 5px; transition: all .25s }
+.cartify-testimonials .carousel-indicators .active { width: 26px; border-radius: 99px; background: var(--accent-grad) }
+@media (min-width: 992px) {
+    .cartify-testimonials .carousel-inner { display: flex; gap: 1.5rem; overflow: visible }
+    .cartify-testimonials .carousel-item { display: flex !important; flex: 1 1 0; position: relative; opacity: 1 !important; transform: none !important; transition: none }
+    .cartify-testimonials .carousel-item .review-card { flex: 1; margin: 0 }
+    .cartify-testimonials .carousel-control-prev,
+    .cartify-testimonials .carousel-control-next,
+    .cartify-testimonials .carousel-indicators { display: none }
+}
+body.dark-mode .cartify-testimonials .carousel-indicators [data-bs-target] { background: rgba(255,255,255,.2) }
+body.dark-mode .cartify-testimonials .review-card h6.text-dark { color: #f1f5f9 !important }
+
+/* ================================================================
+   🌙 SOFT NIGHT — reduce harshness of dark mode
+   ยกพื้นขึ้น, ลด contrast, ลด glow, ลด saturation
+   ================================================================ */
+
+/* S1. Lift base surfaces so dark mode feels soft charcoal/navy, not pitch-black */
+body.dark-mode {
+    --primary: #dbe1f4;        /* softer than #e9ecf7 — less glare */
+    --secondary: #9aa2c3;      /* gentler than #a3aac8 */
+    --bg-0: #0e1330;           /* lifted from #070a1a */
+    --bg-light: #151b3a;       /* lifted */
+    --surface: #141a38;        /* now lighter than bg-0 (proper layering) */
+    --surface-2: #1c2448;
+    --surface-3: #242d5a;
+    --border: rgba(139,92,246,.10);
+    --border-strong: rgba(139,92,246,.22);
+    --shadow-sm: 0 4px 10px rgba(0,0,0,.28);
+    --shadow-md: 0 10px 26px rgba(0,0,0,.36);
+    --shadow-lg: 0 20px 48px rgba(0,0,0,.42);
+}
+
+/* S2. Body backdrop — gentler aurora, higher blur, less saturation */
+body.dark-mode {
+    background:
+        radial-gradient(1400px 900px at 10% -10%, rgba(139,92,246,.07), transparent 60%),
+        radial-gradient(1200px 800px at 92% 22%, rgba(236,72,153,.05), transparent 55%),
+        radial-gradient(1000px 700px at 50% 115%, rgba(6,182,212,.04), transparent 60%),
+        #0e1330;
+}
+
+/* S3. Accent saturation tamed — same hue, softer punch (uses CSS color-mix if supported) */
+@supports (color: color-mix(in oklab, red, blue)) {
+    body.dark-mode { --accent: color-mix(in oklab, #8b5cf6 88%, #cbd5e1 12%) }
+    body.dark-mode { --accent2: color-mix(in oklab, #ec4899 85%, #f1f5f9 15%) }
+}
+
+/* S4. Cards — soft surface, readable borders, no harsh edge */
+body.dark-mode .card,
+body.dark-mode .premium-card,
+body.dark-mode .review-card,
+body.dark-mode .reco-card,
+body.dark-mode .rv-card,
+body.dark-mode .category-box,
+body.dark-mode .flash-card,
+body.dark-mode .stat-card,
+body.dark-mode .newsletter-card { background: var(--surface) !important; border: 1px solid rgba(139,92,246,.08) !important; box-shadow: 0 8px 22px rgba(0,0,0,.28) !important }
+body.dark-mode .card:hover,
+body.dark-mode .premium-card:hover,
+body.dark-mode .review-card:hover,
+body.dark-mode .reco-card:hover,
+body.dark-mode .rv-card:hover,
+body.dark-mode .category-box:hover,
+body.dark-mode .flash-card:hover { box-shadow: 0 14px 32px rgba(0,0,0,.38), 0 0 0 1px rgba(139,92,246,.18) !important; border-color: rgba(139,92,246,.18) !important }
+
+/* S5. Navbar — smoother glass, tuned down glow */
+body.dark-mode .premium-nav { background: rgba(14,19,48,.78) !important; border-bottom: 1px solid rgba(139,92,246,.08) !important; box-shadow: 0 1px 0 rgba(255,255,255,.03), 0 6px 20px rgba(0,0,0,.25) !important }
+
+/* S6. Modals / dropdowns — lifted surface, thin border */
+body.dark-mode .modal-content,
+body.dark-mode .dropdown-menu,
+body.dark-mode .custom-dropdown,
+body.dark-mode .cart-dropdown { background: var(--surface-2) !important; border: 1px solid rgba(139,92,246,.1) !important; box-shadow: 0 20px 50px rgba(0,0,0,.45) !important; color: var(--primary) }
+body.dark-mode .dropdown-item { color: var(--primary) }
+body.dark-mode .dropdown-item:hover { background: rgba(139,92,246,.12); color: #fff }
+
+/* S7. Inputs — softer */
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea,
+body.dark-mode .form-control,
+body.dark-mode .form-select { background: rgba(20,26,56,.8) !important; border-color: rgba(139,92,246,.18) !important; color: var(--primary) !important }
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder { color: rgba(155,162,195,.6) }
+body.dark-mode .form-control:focus { border-color: var(--accent) !important; box-shadow: 0 0 0 3px rgba(139,92,246,.12) !important }
+
+/* S8. Focus ring — less electric on dark */
+body.dark-mode :where(a,button,[role="button"],input,select,textarea,[tabindex]):focus-visible { box-shadow: 0 0 0 4px rgba(139,92,246,.18), 0 0 16px rgba(236,72,153,.18) !important; outline-color: rgba(139,92,246,.55) !important }
+
+/* S9. Gradient text — slightly desaturated on dark so it doesn't "buzz" */
+body.dark-mode .gradient-text,
+body.dark-mode .text-accent { filter: saturate(.88) brightness(1.04) }
+
+/* S10. Footer — less black-well, more of a deep navy */
+body.dark-mode .footer-premium { background: linear-gradient(180deg, #121838, #0e1330) !important; border-top: 1px solid rgba(139,92,246,.08) !important }
+
+/* S11. Scrollbar — calmer */
+body.dark-mode::-webkit-scrollbar-track, body.dark-mode *::-webkit-scrollbar-track { background: rgba(20,26,56,.5) }
+body.dark-mode::-webkit-scrollbar-thumb, body.dark-mode *::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(139,92,246,.7), rgba(236,72,153,.65)); border: 2px solid rgba(14,19,48,.9) }
+
+/* S12. Text weight — soften bright-white body text a touch */
+body.dark-mode p, body.dark-mode .lead, body.dark-mode .small, body.dark-mode small { color: color-mix(in oklab, var(--primary) 92%, transparent 8%) }
+body.dark-mode .text-muted { color: var(--secondary) !important }
+body.dark-mode .text-white-50 { color: rgba(219,225,244,.56) !important }
+
+/* S13. Kill harsh conic/neon borders on dark (from WORLD-CLASS POLISH P6) */
+body.dark-mode .premium-card::before,
+body.dark-mode .category-box::before,
+body.dark-mode .review-card::before { opacity: .5 !important }
+
+/* S14. Flash sale on dark — less strobing */
+body.dark-mode .flash-sale { background: linear-gradient(135deg, rgba(30,27,75,.95), rgba(49,46,129,.9)) !important }
+body.dark-mode .countdown-box { background: rgba(139,92,246,.12) !important; border: 1px solid rgba(139,92,246,.2) !important }
+
+/* S15. Announcement bar on dark — was bright purple, now muted */
+body.dark-mode .announcement-bar { background: linear-gradient(90deg, #1e1b4b, #312e81, #1e1b4b) !important; color: #dbe1f4 !important; border-bottom: 1px solid rgba(139,92,246,.15) }
+
+/* S16. Bootstrap components on soft night */
+body.dark-mode .toast { background: rgba(20,26,56,.95) !important }
+body.dark-mode .cartify-breadcrumb { background: rgba(139,92,246,.08); border-color: rgba(139,92,246,.16) }
+body.dark-mode .cartify-filter-offcanvas { --bs-offcanvas-bg: #141a38 }
+body.dark-mode .ship-progress .progress { background: rgba(139,92,246,.14) }
+
+/* S17. Hero shapes — tone down the glare on dark */
+body.dark-mode .shape { opacity: .35 !important; filter: blur(80px) saturate(.8) }
+
+/* ================================================================
+   🎁 LUCKY GIFT NAV BUTTON — visible in the navbar, impossible to miss
+   ================================================================ */
+.lucky-nav-btn {
+    position: relative;
+    display: inline-flex; align-items: center; gap: .45rem;
+    padding: .45rem .75rem;
+    border: 0;
+    border-radius: 99px;
+    background: linear-gradient(135deg, #f59e0b, #ec4899 52%, #8b5cf6);
+    background-size: 220% 220%;
+    color: #fff; font-weight: 700; font-size: 1.1rem; line-height: 1;
+    box-shadow: 0 8px 22px rgba(236,72,153,.38), 0 0 0 0 rgba(245,158,11,.55);
+    cursor: pointer;
+    animation: luckyGrad 5s ease infinite, luckyPop 2.4s ease-in-out infinite;
+    transition: transform .22s ease, box-shadow .22s ease;
+    min-height: 40px; min-width: 40px;
+    justify-content: center;
+    isolation: isolate;
+}
+.lucky-nav-btn::before {
+    content: ""; position: absolute; inset: -3px; border-radius: inherit;
+    background: linear-gradient(135deg, #fde68a, #ec4899, #8b5cf6);
+    background-size: 220% 220%;
+    z-index: -1; filter: blur(10px); opacity: .55;
+    animation: luckyGrad 5s ease infinite;
+}
+.lucky-nav-btn .lucky-ring { position: absolute; inset: -4px; border-radius: inherit; border: 2px solid rgba(245,158,11,.7); animation: luckyPulse 1.8s ease-out infinite; pointer-events: none }
+.lucky-nav-btn .lucky-pill { font-size: .76rem; font-weight: 700; letter-spacing: .02em; text-transform: none; padding-right: .15rem }
+.lucky-nav-btn i.bi-gift-fill { font-size: 1.1rem; filter: drop-shadow(0 1px 2px rgba(0,0,0,.2)) }
+.lucky-nav-btn:hover { transform: translateY(-2px) scale(1.05); box-shadow: 0 12px 28px rgba(236,72,153,.5); color: #fff }
+.lucky-nav-btn:active { transform: translateY(0) scale(.97) }
+.lucky-nav-btn:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px }
+@keyframes luckyGrad { 0%,100% { background-position: 0% 50% } 50% { background-position: 100% 50% } }
+@keyframes luckyPop  { 0%,100% { transform: translateY(0) rotate(0) } 50% { transform: translateY(-2px) rotate(-3deg) } }
+@keyframes luckyPulse { 0% { transform: scale(1); opacity: .8 } 100% { transform: scale(1.35); opacity: 0 } }
+
+/* Mobile compact variant — icon only */
+#luckyBtnMobile { padding: 0; width: 40px; height: 40px; font-size: 1.05rem }
+#luckyBtnMobile .lucky-pill { display: none }
+
+body.dark-mode .lucky-nav-btn { box-shadow: 0 8px 22px rgba(236,72,153,.32), 0 2px 6px rgba(0,0,0,.4) }
+.reduce-motion .lucky-nav-btn,
+.reduce-motion .lucky-nav-btn::before,
+.reduce-motion .lucky-nav-btn .lucky-ring { animation: none }

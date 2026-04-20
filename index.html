@@ -42,8 +42,8 @@
             var prefers = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
             var isDark = saved === 'true' || (saved === null && prefers);
             var html = document.documentElement;
-            // Always set Bootstrap theme attr — 'dark' or 'light'. BS 5.3 auto-styles ALL components.
             html.setAttribute('data-bs-theme', isDark ? 'dark' : 'light');
+            window.__initialDark = isDark;
             if (isDark) {
                 html.classList.add('dark-preboot');
                 var tryBody = function(){
@@ -51,6 +51,10 @@
                         document.body.classList.add('dark-mode');
                         var m = document.querySelector('meta[name="theme-color"]');
                         if (m) m.setAttribute('content', '#070a1a');
+                        var tm = document.getElementById('thumbMobile');
+                        var td = document.getElementById('thumbDesktop');
+                        if (tm) tm.textContent = '☀️';
+                        if (td) td.textContent = '☀️';
                     } else {
                         requestAnimationFrame(tryBody);
                     }
@@ -170,10 +174,11 @@
         </a>
 
         <div class="d-flex align-items-center gap-2 d-lg-none ms-auto">
-            <button class="dark-toggle" id="darkToggleMobile" aria-label="Theme">
+            <button id="luckyBtnMobile" type="button" class="lucky-nav-btn" aria-label="วงล้อของขวัญ" onclick="openWheel()"><i class="bi bi-gift-fill"></i><span class="lucky-ring"></span></button>
+            <button class="dark-toggle" id="darkToggleMobile" aria-label="Theme" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="สลับโหมดมืด/สว่าง">
                 <div class="dark-toggle-thumb" id="thumbMobile">🌙</div>
             </button>
-            <button class="navbar-toggler border-0 p-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler border-0 p-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="เมนู">
                 <i class="bi bi-list fs-1" style="color:var(--primary)"></i>
             </button>
         </div>
@@ -208,7 +213,7 @@
                 <!-- Search -->
                 <div class="search-box position-relative">
                     <input type="search" id="searchInput" class="form-control py-2" placeholder="ค้นหาสินค้า..." autocomplete="off">
-                    <button class="voice-btn" id="voiceBtn" type="button" aria-label="Voice search"><i class="bi bi-mic-fill"></i></button>
+                    <button class="voice-btn" id="voiceBtn" type="button" aria-label="Voice search" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="ค้นหาด้วยเสียง"><i class="bi bi-mic-fill"></i></button>
                 </div>
 
                 <!-- Cart -->
@@ -221,10 +226,22 @@
                         <h6 class="fw-bold mb-3 font-poppins" style="color:var(--primary)"><span data-i18n="cart_title">ตะกร้าสินค้า</span> (<span id="cart-count-text">0</span>)</h6>
                         <div id="cart-items" class="mb-3" style="max-height:260px;overflow-y:auto"></div>
 
-                        <!-- Promo -->
-                        <div class="promo-wrap">
-                            <input type="text" id="promoInput" class="promo-input" placeholder="กรอกโค้ดส่วนลด" autocomplete="off">
-                            <button class="promo-btn" onclick="applyPromo()"><span data-i18n="apply">ใช้</span></button>
+                        <!-- Free shipping progress (BS5 progress) -->
+                        <div id="shipProgressWrap" class="ship-progress mb-3 d-none">
+                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                <small class="fw-semibold d-flex align-items-center gap-1" style="color:var(--primary)"><i class="bi bi-truck text-accent"></i><span id="shipProgressLabel" data-i18n="ship_add">เติมอีก ฿500 ส่งฟรี</span></small>
+                                <small class="text-muted" id="shipProgressPct">0%</small>
+                            </div>
+                            <div class="progress ship-progress-bar" role="progressbar" aria-label="Free shipping progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" style="height:8px">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" id="shipProgressFill" style="width:0%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Promo (BS5 input-group) -->
+                        <div class="input-group input-group-sm promo-wrap promo-group">
+                            <span class="input-group-text promo-addon"><i class="bi bi-ticket-perforated-fill text-accent"></i></span>
+                            <input type="text" id="promoInput" class="form-control promo-input" placeholder="กรอกโค้ดส่วนลด" autocomplete="off" aria-label="Promo code">
+                            <button class="btn promo-btn fw-semibold" type="button" onclick="applyPromo()"><span data-i18n="apply">ใช้</span></button>
                         </div>
                         <div id="promoDisplay"></div>
 
@@ -247,7 +264,9 @@
                     </div>
                 </div>
 
-                <button class="dark-toggle d-none d-lg-flex" id="darkToggleDesktop" aria-label="Theme">
+                <button id="luckyBtnDesktop" type="button" class="lucky-nav-btn d-none d-lg-inline-flex" aria-label="วงล้อของขวัญ" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="หมุนวงล้อ ลุ้นส่วนลดฟรี 🎁" onclick="openWheel()"><i class="bi bi-gift-fill"></i><span class="lucky-ring"></span><span class="lucky-pill d-none d-xl-inline">ลุ้นรางวัล</span></button>
+
+                <button class="dark-toggle d-none d-lg-flex" id="darkToggleDesktop" aria-label="Theme" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="สลับโหมดมืด/สว่าง">
                     <div class="dark-toggle-thumb" id="thumbDesktop">🌙</div>
                 </button>
 
@@ -391,6 +410,13 @@
 <!-- ===== Products ===== -->
 <section id="products" class="py-6">
     <div class="container">
+        <nav aria-label="breadcrumb" class="fade-up mb-3">
+            <ol class="breadcrumb cartify-breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="#" onclick="event.preventDefault();scrollTo({top:0,behavior:'smooth'})"><i class="bi bi-house-door me-1"></i><span data-i18n="nav_home">หน้าแรก</span></a></li>
+                <li class="breadcrumb-item"><a href="#categories" data-i18n="nav_cat">หมวดหมู่</a></li>
+                <li class="breadcrumb-item active" aria-current="page" id="breadcrumbCurrent" data-i18n="cat_all">ทั้งหมด</li>
+            </ol>
+        </nav>
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-5 gap-3 fade-up">
             <div>
                 <h2 class="fw-bold display-6 mb-2" data-i18n="prod_heading">สินค้าแนะนำ</h2>
@@ -410,21 +436,25 @@
                     <option value="price-desc" data-i18n="sort_desc">ราคา สูง→ต่ำ</option>
                     <option value="popular" data-i18n="sort_pop">ยอดนิยม</option>
                 </select>
-                <button class="btn btn-outline-dark rounded-pill px-3" onclick="toggleAdvFilter()"><i class="bi bi-sliders"></i></button>
+                <button class="btn btn-outline-dark rounded-pill px-3 position-relative" type="button" data-bs-toggle="offcanvas" data-bs-target="#advFilter" aria-controls="advFilter" data-bs-title="ตัวกรองขั้นสูง" aria-label="Filter"><i class="bi bi-sliders"></i><span class="filter-badge d-none" id="advFilterBadge"></span></button>
             </div>
         </div>
 
-        <!-- Advanced Filter Panel -->
-        <div id="advFilter" class="adv-filter mb-4">
-            <div class="row g-3 align-items-end">
-                <div class="col-md-4">
+        <!-- Advanced Filter Offcanvas (BS5) -->
+        <div class="offcanvas offcanvas-end cartify-filter-offcanvas" tabindex="-1" id="advFilter" aria-labelledby="advFilterLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title fw-bold d-flex align-items-center gap-2" id="advFilterLabel"><i class="bi bi-sliders text-accent"></i><span data-i18n="adv_filter_title">ตัวกรองขั้นสูง</span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <div class="filter-section">
                     <label class="form-label small fw-semibold"><i class="bi bi-currency-exchange me-1 text-accent"></i><span data-i18n="price_range">ช่วงราคา</span>: ฿<span id="prLo">0</span> – ฿<span id="prHi">5000</span></label>
                     <div class="range-dual">
                         <input type="range" id="priceMin" min="0" max="5000" step="50" value="0">
                         <input type="range" id="priceMax" min="0" max="5000" step="50" value="5000">
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="filter-section">
                     <label class="form-label small fw-semibold"><i class="bi bi-star-fill me-1 text-warning"></i><span data-i18n="min_rating">คะแนนขั้นต่ำ</span></label>
                     <div class="rating-pills" id="ratingPills">
                         <button class="rp active" data-r="0">All</button>
@@ -433,7 +463,7 @@
                         <button class="rp" data-r="4.5">4.5★+</button>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="filter-section">
                     <label class="form-label small fw-semibold d-block"><i class="bi bi-box-seam me-1 text-success"></i><span data-i18n="stock_filter">สต็อก</span></label>
                     <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox" id="inStockOnly">
@@ -444,13 +474,30 @@
                         <label class="form-check-label small" for="onSaleOnly" data-i18n="on_sale">ลดราคาเท่านั้น</label>
                     </div>
                 </div>
-                <div class="col-md-2 d-grid">
-                    <button class="btn btn-outline-danger rounded-pill btn-sm" onclick="resetAdvFilter()"><i class="bi bi-arrow-counterclockwise me-1"></i><span data-i18n="reset">รีเซ็ต</span></button>
+                <div class="filter-section">
+                    <label class="form-label small fw-semibold mb-2"><i class="bi bi-grid me-1 text-accent"></i><span data-i18n="nav_cat">หมวดหมู่</span></label>
+                    <div class="list-group list-group-flush cartify-filter-list">
+                        <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" onclick="filterProducts('all');bootstrap.Offcanvas.getInstance(document.getElementById('advFilter'))?.hide()"><span><i class="bi bi-grid-3x3-gap me-2 text-accent"></i><span data-i18n="cat_all">ทั้งหมด</span></span><i class="bi bi-chevron-right text-muted"></i></button>
+                        <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" onclick="filterProducts('electronics');bootstrap.Offcanvas.getInstance(document.getElementById('advFilter'))?.hide()"><span><i class="bi bi-laptop me-2 text-accent"></i><span data-i18n="cat_elec">อิเล็กทรอนิกส์</span></span><i class="bi bi-chevron-right text-muted"></i></button>
+                        <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" onclick="filterProducts('fashion');bootstrap.Offcanvas.getInstance(document.getElementById('advFilter'))?.hide()"><span><i class="bi bi-handbag me-2 text-accent"></i><span data-i18n="cat_fashion">เสื้อผ้าแฟชั่น</span></span><i class="bi bi-chevron-right text-muted"></i></button>
+                        <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" onclick="filterProducts('home');bootstrap.Offcanvas.getInstance(document.getElementById('advFilter'))?.hide()"><span><i class="bi bi-house-heart me-2 text-accent"></i><span data-i18n="cat_home">ของใช้ในบ้าน</span></span><i class="bi bi-chevron-right text-muted"></i></button>
+                        <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" onclick="filterProducts('jewelry');bootstrap.Offcanvas.getInstance(document.getElementById('advFilter'))?.hide()"><span><i class="bi bi-gem me-2 text-accent"></i><span data-i18n="cat_jewel">เครื่องประดับ</span></span><i class="bi bi-chevron-right text-muted"></i></button>
+                    </div>
+                </div>
+                <div class="d-grid gap-2 mt-4">
+                    <button class="btn btn-accent-grad rounded-pill fw-semibold" type="button" data-bs-dismiss="offcanvas"><i class="bi bi-check2-circle me-1"></i><span data-i18n="apply_filter">ใช้ตัวกรอง</span></button>
+                    <button class="btn btn-outline-danger rounded-pill" type="button" onclick="resetAdvFilter()"><i class="bi bi-arrow-counterclockwise me-1"></i><span data-i18n="reset">รีเซ็ต</span></button>
                 </div>
             </div>
         </div>
 
-        <div class="row g-4" id="product-grid"></div>
+        <div class="row g-4" id="product-grid">
+            <!-- Skeleton placeholders (replaced by renderProducts) -->
+            <div class="col-6 col-md-4 col-lg-3"><div class="card premium-card h-100 border-0 placeholder-glow"><div class="skeleton-img placeholder"></div><div class="card-body p-3"><span class="placeholder col-4 mb-2 d-block"></span><span class="placeholder col-9 mb-1 d-block"></span><span class="placeholder col-6 mb-2 d-block"></span><span class="placeholder col-3 placeholder-lg"></span></div></div></div>
+            <div class="col-6 col-md-4 col-lg-3"><div class="card premium-card h-100 border-0 placeholder-glow"><div class="skeleton-img placeholder"></div><div class="card-body p-3"><span class="placeholder col-4 mb-2 d-block"></span><span class="placeholder col-9 mb-1 d-block"></span><span class="placeholder col-6 mb-2 d-block"></span><span class="placeholder col-3 placeholder-lg"></span></div></div></div>
+            <div class="col-6 col-md-4 col-lg-3 d-none d-md-block"><div class="card premium-card h-100 border-0 placeholder-glow"><div class="skeleton-img placeholder"></div><div class="card-body p-3"><span class="placeholder col-4 mb-2 d-block"></span><span class="placeholder col-9 mb-1 d-block"></span><span class="placeholder col-6 mb-2 d-block"></span><span class="placeholder col-3 placeholder-lg"></span></div></div></div>
+            <div class="col-6 col-md-4 col-lg-3 d-none d-lg-block"><div class="card premium-card h-100 border-0 placeholder-glow"><div class="skeleton-img placeholder"></div><div class="card-body p-3"><span class="placeholder col-4 mb-2 d-block"></span><span class="placeholder col-9 mb-1 d-block"></span><span class="placeholder col-6 mb-2 d-block"></span><span class="placeholder col-3 placeholder-lg"></span></div></div></div>
+        </div>
         <div class="no-results" id="noResults">
             <div style="font-size:3.5rem;opacity:.25;margin-bottom:1rem"><i class="bi bi-search"></i></div>
             <h3 class="fw-bold" style="color:var(--primary)" data-i18n="no_found">ไม่พบสินค้า</h3>
@@ -510,55 +557,64 @@
             <h2 class="fw-bold display-6 mb-2" data-i18n="rev_heading">ลูกค้ากว่า 50,000 คนไว้วางใจเรา</h2>
             <div class="divider mx-auto"></div>
         </div>
-        <div class="row g-4">
-            <div class="col-md-4 fade-up">
-                <div class="review-card">
-                    <div class="d-flex align-items-center gap-3 mb-3">
-                        <img src="https://i.pravatar.cc/80?img=32" class="review-avatar" alt="" onerror="this.src='https://placehold.co/48/8b5cf6/fff?text=S'">
-                        <div>
-                            <h6 class="mb-0 fw-bold text-dark">คุณสมฤดี ม.</h6>
-                            <div class="d-flex align-items-center gap-2">
-                                <div class="review-stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
-                                <span class="verified-badge"><i class="bi bi-patch-check-fill me-1"></i>Verified</span>
+        <div id="testimonialsCarousel" class="carousel slide cartify-testimonials fade-up" data-bs-ride="carousel" data-bs-touch="true" data-bs-interval="6500">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#testimonialsCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Review 1"></button>
+                <button type="button" data-bs-target="#testimonialsCarousel" data-bs-slide-to="1" aria-label="Review 2"></button>
+                <button type="button" data-bs-target="#testimonialsCarousel" data-bs-slide-to="2" aria-label="Review 3"></button>
+            </div>
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class="review-card h-100">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <img src="https://i.pravatar.cc/80?img=32" class="review-avatar" alt="" onerror="this.src='https://placehold.co/48/8b5cf6/fff?text=S'">
+                            <div>
+                                <h6 class="mb-0 fw-bold text-dark">คุณสมฤดี ม.</h6>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="review-stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                                    <span class="verified-badge"><i class="bi bi-patch-check-fill me-1"></i>Verified</span>
+                                </div>
                             </div>
                         </div>
+                        <p class="small mb-3" style="color:var(--secondary);line-height:1.7">"สั่งหูฟังไร้สายมา คุณภาพดีมาก ส่งเร็วแพ็คดี ถูกกว่าห้างเยอะ ชอบมากค่ะ จะกลับมาซื้ออีกแน่นอน 💜"</p>
+                        <small class="text-muted"><i class="bi bi-calendar3 me-1"></i>15 เม.ย. 2026</small>
                     </div>
-                    <p class="small mb-3" style="color:var(--secondary);line-height:1.7">"สั่งหูฟังไร้สายมา คุณภาพดีมาก ส่งเร็วแพ็คดี ถูกกว่าห้างเยอะ ชอบมากค่ะ จะกลับมาซื้ออีกแน่นอน 💜"</p>
-                    <small class="text-muted"><i class="bi bi-calendar3 me-1"></i>15 เม.ย. 2026</small>
                 </div>
-            </div>
-            <div class="col-md-4 fade-up" style="transition-delay:.15s">
-                <div class="review-card">
-                    <div class="d-flex align-items-center gap-3 mb-3">
-                        <img src="https://i.pravatar.cc/80?img=12" class="review-avatar" alt="" onerror="this.src='https://placehold.co/48/ec4899/fff?text=N'">
-                        <div>
-                            <h6 class="mb-0 fw-bold text-dark">คุณณัฐพล ก.</h6>
-                            <div class="d-flex align-items-center gap-2">
-                                <div class="review-stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
-                                <span class="verified-badge"><i class="bi bi-patch-check-fill me-1"></i>Verified</span>
+                <div class="carousel-item">
+                    <div class="review-card h-100">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <img src="https://i.pravatar.cc/80?img=12" class="review-avatar" alt="" onerror="this.src='https://placehold.co/48/ec4899/fff?text=N'">
+                            <div>
+                                <h6 class="mb-0 fw-bold text-dark">คุณณัฐพล ก.</h6>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="review-stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                                    <span class="verified-badge"><i class="bi bi-patch-check-fill me-1"></i>Verified</span>
+                                </div>
                             </div>
                         </div>
+                        <p class="small mb-3" style="color:var(--secondary);line-height:1.7">"Smart Watch ดีงามครับ ฟีเจอร์ครบ ตรวจสุขภาพแม่น แบตอึด ใช้งานง่าย ที่สำคัญเว็บ Cartify ดีไซน์สวยมาก ช้อปสะดวก"</p>
+                        <small class="text-muted"><i class="bi bi-calendar3 me-1"></i>10 เม.ย. 2026</small>
                     </div>
-                    <p class="small mb-3" style="color:var(--secondary);line-height:1.7">"Smart Watch ดีงามครับ ฟีเจอร์ครบ ตรวจสุขภาพแม่น แบตอึด ใช้งานง่าย ที่สำคัญเว็บ Cartify ดีไซน์สวยมาก ช้อปสะดวก"</p>
-                    <small class="text-muted"><i class="bi bi-calendar3 me-1"></i>10 เม.ย. 2026</small>
                 </div>
-            </div>
-            <div class="col-md-4 fade-up" style="transition-delay:.3s">
-                <div class="review-card">
-                    <div class="d-flex align-items-center gap-3 mb-3">
-                        <img src="https://i.pravatar.cc/80?img=45" class="review-avatar" alt="" onerror="this.src='https://placehold.co/48/8b5cf6/fff?text=P'">
-                        <div>
-                            <h6 class="mb-0 fw-bold text-dark">คุณปิยวรรณ ส.</h6>
-                            <div class="d-flex align-items-center gap-2">
-                                <div class="review-stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i></div>
-                                <span class="verified-badge"><i class="bi bi-patch-check-fill me-1"></i>Verified</span>
+                <div class="carousel-item">
+                    <div class="review-card h-100">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <img src="https://i.pravatar.cc/80?img=45" class="review-avatar" alt="" onerror="this.src='https://placehold.co/48/8b5cf6/fff?text=P'">
+                            <div>
+                                <h6 class="mb-0 fw-bold text-dark">คุณปิยวรรณ ส.</h6>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="review-stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i></div>
+                                    <span class="verified-badge"><i class="bi bi-patch-check-fill me-1"></i>Verified</span>
+                                </div>
                             </div>
                         </div>
+                        <p class="small mb-3" style="color:var(--secondary);line-height:1.7">"กระเป๋าและรองเท้าสวยมากเกินราคา วัสดุดี เย็บเรียบ คุ้มค่ากับเงินที่จ่ายจริงๆ รีวิวดีจนอดซื้อไม่ไหวค่ะ ❤️"</p>
+                        <small class="text-muted"><i class="bi bi-calendar3 me-1"></i>5 เม.ย. 2026</small>
                     </div>
-                    <p class="small mb-3" style="color:var(--secondary);line-height:1.7">"กระเป๋าและรองเท้าสวยมากเกินราคา วัสดุดี เย็บเรียบ คุ้มค่ากับเงินที่จ่ายจริงๆ รีวิวดีจนอดซื้อไม่ไหวค่ะ ❤️"</p>
-                    <small class="text-muted"><i class="bi bi-calendar3 me-1"></i>5 เม.ย. 2026</small>
                 </div>
             </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#testimonialsCarousel" data-bs-slide="prev" aria-label="Previous"><span class="carousel-control-prev-icon" aria-hidden="true"></span></button>
+            <button class="carousel-control-next" type="button" data-bs-target="#testimonialsCarousel" data-bs-slide="next" aria-label="Next"><span class="carousel-control-next-icon" aria-hidden="true"></span></button>
         </div>
     </div>
 </section>
@@ -769,9 +825,12 @@
                 <span class="badge mb-3 px-3 py-2 rounded-pill" style="background:rgba(139,92,246,.1);color:var(--accent)"><i class="bi bi-stars me-1"></i> <span data-i18n="nl_badge">สิทธิพิเศษ</span></span>
                 <h2 class="fw-bold display-6 mb-3" style="color:var(--primary)" data-i18n="nl_heading">ลด 15% ออเดอร์แรก</h2>
                 <p class="text-muted mb-4" data-i18n="nl_desc">ทิ้งอีเมลไว้ มีของใหม่หรือลดราคาจะส่งให้ก่อน</p>
-                <form class="row g-2 justify-content-center" onsubmit="handleNewsletter(event)">
-                    <div class="col-sm-8"><input type="email" class="form-control form-control-lg rounded-pill px-4" placeholder="กรอกอีเมลของคุณ..." required></div>
-                    <div class="col-sm-auto"><button class="btn btn-lg rounded-pill px-4 w-100 btn-hover-ripple fw-semibold" type="submit" style="background:var(--accent-grad);color:white;border:none"><i class="bi bi-send me-2"></i><span data-i18n="subscribe">สมัครเลย</span></button></div>
+                <form class="newsletter-form" onsubmit="handleNewsletter(event)">
+                    <div class="input-group input-group-lg newsletter-input-group mx-auto" style="max-width:560px">
+                        <span class="input-group-text newsletter-addon bg-white border-0"><i class="bi bi-envelope-heart text-accent fs-5"></i></span>
+                        <input type="email" class="form-control border-0" placeholder="กรอกอีเมลของคุณ..." aria-label="Email" required>
+                        <button class="btn newsletter-btn px-4 fw-semibold btn-hover-ripple" type="submit"><i class="bi bi-send me-2"></i><span data-i18n="subscribe">สมัครเลย</span></button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -789,12 +848,12 @@
                 </a>
                 <p class="text-muted mb-4" style="font-size:.87rem" data-i18n="footer_about">ร้านของใช้ แฟชั่น และเครื่องประดับ ของแท้ ราคาดี ส่งไวทั่วไทย</p>
                 <div class="d-flex gap-2">
-                    <a href="#" class="social-btn"><i class="bi bi-facebook"></i></a>
-                    <a href="#" class="social-btn"><i class="bi bi-instagram"></i></a>
-                    <a href="#" class="social-btn"><i class="bi bi-twitter-x"></i></a>
-                    <a href="#" class="social-btn"><i class="bi bi-line"></i></a>
-                    <a href="#" class="social-btn"><i class="bi bi-tiktok"></i></a>
-                    <a href="#" class="social-btn"><i class="bi bi-youtube"></i></a>
+                    <a href="#" class="social-btn" data-bs-toggle="tooltip" data-bs-title="Facebook" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="social-btn" data-bs-toggle="tooltip" data-bs-title="Instagram" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="social-btn" data-bs-toggle="tooltip" data-bs-title="X (Twitter)" aria-label="X"><i class="bi bi-twitter-x"></i></a>
+                    <a href="#" class="social-btn" data-bs-toggle="tooltip" data-bs-title="LINE" aria-label="Line"><i class="bi bi-line"></i></a>
+                    <a href="#" class="social-btn" data-bs-toggle="tooltip" data-bs-title="TikTok" aria-label="TikTok"><i class="bi bi-tiktok"></i></a>
+                    <a href="#" class="social-btn" data-bs-toggle="tooltip" data-bs-title="YouTube" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
                 </div>
             </div>
             <div class="col-6 col-lg-2">
@@ -843,7 +902,7 @@
 <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index:1100"></div>
 
 <!-- Back to Top -->
-<button id="backToTop" aria-label="Top"><i class="bi bi-arrow-up text-white fs-5"></i></button>
+<button id="backToTop" aria-label="Top" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="กลับขึ้นบนสุด"><i class="bi bi-arrow-up text-white fs-5"></i></button>
 
 <!-- Mobile Cart FAB -->
 <button class="cart-fab d-md-none" onclick="document.getElementById('cartDropdownTrigger').click()">
@@ -1021,7 +1080,7 @@
 <div id="cursor-ring"></div>
 
 <!-- ===== A11y Panel ===== -->
-<button class="a11y-fab" id="a11yFab" aria-label="Accessibility"><i class="bi bi-universal-access-circle"></i></button>
+<button class="a11y-fab" id="a11yFab" aria-label="Accessibility" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="การเข้าถึง · ธีม · ขนาดตัวอักษร"><i class="bi bi-universal-access-circle"></i></button>
 <div class="a11y-panel" id="a11yPanel">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h6 class="fw-bold mb-0"><i class="bi bi-universal-access me-1 text-accent"></i><span data-i18n="a11y_title">การเข้าถึง</span></h6>
@@ -1092,7 +1151,7 @@
 </div>
 
 <!-- ===== Live Chat Widget ===== -->
-<button id="chatToggle" class="chat-fab" aria-label="Chat">
+<button id="chatToggle" class="chat-fab" aria-label="Chat" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="แชทกับ Cartify">
     <i class="bi bi-chat-dots-fill"></i>
     <span class="chat-fab-dot"></span>
 </button>
@@ -1364,36 +1423,93 @@ function handlePDPA(accept) {
     document.getElementById('pdpa-banner').classList.remove('show');
 }
 
-// ===== Dark Mode — minimal, CSS-variable driven =====
+// ===== Dark Mode — CSS-variable driven, a11y-first, View-Transitions-ready =====
 const body = document.body;
+const reduceMotionMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
+
 function applyDarkMode(isDark, opts) {
     opts = opts || {};
     body.classList.toggle('dark-mode', isDark);
     document.documentElement.setAttribute('data-bs-theme', isDark ? 'dark' : 'light');
     document.documentElement.classList.remove('dark-preboot');
-    ['thumbMobile','thumbDesktop'].forEach(id => { const t = document.getElementById(id); if (t) t.textContent = isDark ? '☀️' : '🌙'; });
+
+    ['thumbMobile','thumbDesktop'].forEach(id => {
+        const t = document.getElementById(id);
+        if (t) t.textContent = isDark ? '☀️' : '🌙';
+    });
+    ['darkToggleMobile','darkToggleDesktop'].forEach(id => {
+        const b = document.getElementById(id);
+        if (!b) return;
+        b.setAttribute('aria-pressed', String(isDark));
+        const label = isDark ? 'Switch to light mode (Shift+D)' : 'Switch to dark mode (Shift+D)';
+        b.setAttribute('aria-label', label);
+        b.setAttribute('title', label);
+    });
+
     if (!opts.skipStore) localStorage.setItem('darkMode', String(isDark));
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute('content', isDark ? '#070a1a' : '#8b5cf6');
     window.dispatchEvent(new CustomEvent('themechange', { detail: { dark: isDark } }));
 }
+
+let _ttTimer;
+function withSmoothTransition(mutate) {
+    if (reduceMotionMQ.matches) { mutate(); return; }
+    const html = document.documentElement;
+    html.classList.add('theme-transitioning');
+    clearTimeout(_ttTimer);
+    mutate();
+    _ttTimer = setTimeout(() => html.classList.remove('theme-transitioning'), 500);
+}
+
+function toggleDark(evt) {
+    const next = !body.classList.contains('dark-mode');
+    const canVT = 'startViewTransition' in document && !reduceMotionMQ.matches;
+
+    if (!canVT) { withSmoothTransition(() => applyDarkMode(next)); return; }
+
+    const x = evt && typeof evt.clientX === 'number' ? evt.clientX : innerWidth / 2;
+    const y = evt && typeof evt.clientY === 'number' ? evt.clientY : innerHeight / 2;
+    const endRadius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+
+    const transition = document.startViewTransition(() => applyDarkMode(next));
+    transition.ready.then(() => {
+        document.documentElement.animate(
+            { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`] },
+            { duration: 480, easing: 'cubic-bezier(.4,0,.2,1)', pseudoElement: '::view-transition-new(root)' }
+        );
+    }).catch(() => {});
+}
+
 ['darkToggleMobile','darkToggleDesktop'].forEach(id => {
     const btn = document.getElementById(id);
-    if (btn) btn.addEventListener('click', () => applyDarkMode(!body.classList.contains('dark-mode')));
+    if (btn) btn.addEventListener('click', toggleDark);
 });
-if (localStorage.getItem('darkMode') === 'true') applyDarkMode(true, { skipStore: true });
-// live OS preference listener — respect system changes when user hasn't set manually
+
+// Init — ALWAYS sync UI state (fixes stale thumb / preboot class / aria on non-'true' loads)
+(function initDarkMode(){
+    const saved = localStorage.getItem('darkMode');
+    const prefers = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const isDark = typeof window.__initialDark === 'boolean'
+        ? window.__initialDark
+        : (saved === 'true' || (saved === null && prefers));
+    applyDarkMode(isDark, { skipStore: true });
+})();
+
+// Live OS preference — respect system changes when user hasn't set manually
 try {
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
-    (mq.addEventListener ? mq.addEventListener.bind(mq, 'change') : mq.addListener.bind(mq))(e => {
-        if (localStorage.getItem('darkMode') === null) applyDarkMode(e.matches);
-    });
+    const onChange = e => { if (localStorage.getItem('darkMode') === null) withSmoothTransition(() => applyDarkMode(e.matches)); };
+    mq.addEventListener ? mq.addEventListener('change', onChange) : mq.addListener(onChange);
 } catch(e){}
-// keyboard shortcut: Shift+D toggles
+
+// Keyboard shortcut: Shift+D (ignored inside text inputs and when other modifiers held)
 document.addEventListener('keydown', e => {
-    if (e.shiftKey && (e.key === 'D' || e.key === 'd') && !e.target.matches('input,textarea,[contenteditable]')) {
-        applyDarkMode(!body.classList.contains('dark-mode'));
-    }
+    if (!e.shiftKey || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.key !== 'D' && e.key !== 'd') return;
+    if (e.target.matches('input,textarea,select,[contenteditable],[contenteditable=""],[contenteditable="true"]')) return;
+    e.preventDefault();
+    toggleDark();
 });
 
 // ===== Progress Bar + Scroll =====
@@ -1648,7 +1764,36 @@ function updateCartUI() {
         document.getElementById('cart-discount').textContent = '-฿' + Math.round(t.discount).toLocaleString();
     } else document.getElementById('discountRow').classList.add('d-none');
     renderPromoDisplay();
+    updateShipProgress(t.subtotal);
     localStorage.setItem('cartify_cart', JSON.stringify(cart));
+}
+
+// Free-shipping progress (BS5)
+function updateShipProgress(subtotal) {
+    const threshold = 500;
+    const wrap = document.getElementById('shipProgressWrap');
+    const fill = document.getElementById('shipProgressFill');
+    const bar  = wrap?.querySelector('.progress');
+    const pct  = document.getElementById('shipProgressPct');
+    const lbl  = document.getElementById('shipProgressLabel');
+    if (!wrap) return;
+    if (!subtotal) { wrap.classList.add('d-none'); return; }
+    wrap.classList.remove('d-none');
+    const raw = Math.min(100, (subtotal / threshold) * 100);
+    fill.style.width = raw + '%';
+    bar?.setAttribute('aria-valuenow', Math.round(raw));
+    pct.textContent = Math.round(raw) + '%';
+    const en = currentLang === 'en';
+    if (subtotal >= threshold) {
+        lbl.textContent = en ? '🎉 You qualify for FREE shipping!' : '🎉 ได้สิทธิ์ส่งฟรีแล้ว!';
+        fill.classList.remove('progress-bar-striped','progress-bar-animated');
+        wrap.classList.add('ship-done');
+    } else {
+        const remain = threshold - subtotal;
+        lbl.textContent = en ? `Add ฿${remain.toLocaleString()} more for free shipping` : `เติมอีก ฿${remain.toLocaleString()} ส่งฟรี`;
+        fill.classList.add('progress-bar-striped','progress-bar-animated');
+        wrap.classList.remove('ship-done');
+    }
 }
 
 function addToCart(id) {
@@ -1729,8 +1874,24 @@ window.filterProducts = function(cat, btnEl=null) {
     if (btnEl) btnEl.classList.add('active');
     else if (cat === 'all') document.querySelector('.btn-filter')?.classList.add('active');
     filterAndSearch(cat, document.getElementById('searchInput').value.toLowerCase().trim());
+    updateBreadcrumb(cat);
     if (!btnEl) setTimeout(() => document.getElementById('products').scrollIntoView({ behavior:'smooth', block:'start' }), 100);
 };
+
+function updateBreadcrumb(cat) {
+    const el = document.getElementById('breadcrumbCurrent');
+    if (!el) return;
+    const map = {
+        all:       { th:'ทั้งหมด',        en:'All' },
+        electronics:{ th:'อิเล็กทรอนิกส์', en:'Electronics' },
+        fashion:   { th:'เสื้อผ้าแฟชั่น',  en:'Fashion' },
+        home:      { th:'ของใช้ในบ้าน',    en:'Home' },
+        jewelry:   { th:'เครื่องประดับ',   en:'Jewelry' }
+    };
+    const m = map[cat] || map.all;
+    el.textContent = m[currentLang] || m.th;
+    el.removeAttribute('data-i18n');
+}
 
 window.resetFilter = () => { document.getElementById('searchInput').value = ''; filterProducts('all'); };
 
@@ -2327,7 +2488,7 @@ window.openCompareModal = () => {
 };
 
 // ===== Advanced Filter =====
-window.toggleAdvFilter = () => document.getElementById('advFilter').classList.toggle('show');
+window.toggleAdvFilter = () => { const el = document.getElementById('advFilter'); if (el) bootstrap.Offcanvas.getOrCreateInstance(el).toggle(); };
 document.getElementById('priceMin').addEventListener('input', updateAdv);
 document.getElementById('priceMax').addEventListener('input', updateAdv);
 document.querySelectorAll('#ratingPills .rp').forEach(b => b.addEventListener('click', function(){
@@ -2633,28 +2794,42 @@ function renderWheel() {
     svg.innerHTML = html;
 }
 renderWheel();
-let spun = false;
+let wheelRotation = 0;
+let wheelSpinning = false;
+let wheelWon = false;
 window.spinWheel = () => {
-    if (spun) return;
+    if (wheelSpinning || wheelWon) return;
+    wheelSpinning = true;
+    const svg = document.getElementById('wheel');
+    const btn = document.getElementById('spinBtn');
+    const result = document.getElementById('spinResult');
+    if (!svg || !btn) { wheelSpinning = false; return; }
+    result.innerHTML = '';
     const idx = Math.floor(Math.random()*WHEEL_PRIZES.length);
     const step = 360/WHEEL_PRIZES.length;
-    const finalDeg = 360*6 + (360 - (idx*step + step/2));
-    const svg = document.getElementById('wheel');
+    const targetOffset = 360 - (idx*step + step/2);
+    wheelRotation += 360*6 + targetOffset;
     svg.style.transition = 'transform 4.5s cubic-bezier(.2,.9,.2,1)';
-    svg.style.transform = `rotate(${finalDeg}deg)`;
-    document.getElementById('spinBtn').disabled = true;
-    spun = true;
+    svg.style.transform = `rotate(${wheelRotation}deg)`;
+    btn.disabled = true;
+    const oldBtnHTML = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>กำลังหมุน...';
     setTimeout(() => {
+        wheelSpinning = false;
         const prize = WHEEL_PRIZES[idx];
-        const result = document.getElementById('spinResult');
         if (prize.code) {
+            wheelWon = true;
             PROMO_CODES[prize.code] = { type:prize.type, value:prize.value, label:`${prize.code} -${prize.label}` };
             result.innerHTML = `<div class="prize-box"><h4 class="mb-1 gradient-text">🎉 คุณได้ส่วนลด ${prize.label}!</h4><p class="mb-2 small">ใช้โค้ด <code class="fw-bold">${prize.code}</code></p><button class="btn btn-sm btn-accent rounded-pill" onclick="applySpin('${prize.code}')">ใช้โค้ดนี้เลย</button></div>`;
+            btn.innerHTML = '<i class="bi bi-check2-circle me-1"></i>ได้รางวัลแล้ว';
+            btn.disabled = true;
+            localStorage.setItem('cartify_spun', Date.now());
             launchConfetti2();
         } else {
-            result.innerHTML = `<div class="small text-muted">ไม่เป็นไร! ลองใหม่พรุ่งนี้นะ 💜</div>`;
+            result.innerHTML = `<div class="prize-box" style="border-style:solid;border-color:rgba(139,92,246,.3)"><div class="fw-semibold mb-1">😢 พลาดไปนิดเดียว!</div><div class="small text-muted">ลองอีกครั้งสิ — รางวัลใหญ่กำลังรออยู่</div></div>`;
+            btn.innerHTML = '<i class="bi bi-arrow-clockwise me-1"></i>หมุนอีกครั้ง';
+            btn.disabled = false;
         }
-        localStorage.setItem('cartify_spun', Date.now());
     }, 4600);
 };
 window.applySpin = code => {
@@ -2669,14 +2844,28 @@ window.applySpin = code => {
 // ===== Exit Intent =====
 let exitShown = false;
 window.closeExit = () => document.getElementById('exitIntent').classList.remove('show');
+window.openWheel = () => {
+    wheelSpinning = false;
+    wheelWon = !!localStorage.getItem('cartify_spun');
+    const btn = document.getElementById('spinBtn');
+    if (btn) {
+        if (wheelWon) { btn.disabled = true; btn.innerHTML = '<i class="bi bi-check2-circle me-1"></i>ได้รางวัลแล้ววันนี้'; }
+        else { btn.disabled = false; btn.innerHTML = '<i class="bi bi-arrow-clockwise me-1"></i><span data-i18n="spin_now">หมุนเลย!</span>'; }
+    }
+    document.getElementById('exitIntent').classList.add('show');
+};
 document.addEventListener('mouseleave', e => {
     if (exitShown || e.clientY > 0) return;
     if (localStorage.getItem('cartify_exit_shown') === new Date().toDateString()) return;
-    if (localStorage.getItem('cartify_spun')) return;
     exitShown = true;
     localStorage.setItem('cartify_exit_shown', new Date().toDateString());
-    document.getElementById('exitIntent').classList.add('show');
+    openWheel();
 });
+// Test/retry via URL: ?wheel=1 or ?wheel=reset
+if (new URLSearchParams(location.search).get('wheel') === 'reset') {
+    localStorage.removeItem('cartify_spun'); localStorage.removeItem('cartify_exit_shown');
+}
+if (new URLSearchParams(location.search).get('wheel') === '1') setTimeout(openWheel, 500);
 
 // ===== Bundle Deal Hint =====
 function updateBundleHint() {
@@ -2803,7 +2992,56 @@ function renderFAQ() {
 
 // ===== Re-render on lang change =====
 const _setLang = setLang;
-setLang = function(lang) { _setLang(lang); renderFAQ(); renderReco(); updateBundleHint(); };
+setLang = function(lang) { _setLang(lang); renderFAQ(); renderReco(); updateBundleHint(); splitHeroChars(); };
+
+// ===== Hero title character-by-character reveal =====
+function segmentGraphemes(str) {
+    if (typeof Intl !== 'undefined' && Intl.Segmenter) {
+        return [...new Intl.Segmenter(undefined, { granularity: 'grapheme' }).segment(str)].map(s => s.segment);
+    }
+    return [...str];
+}
+function splitHeroChars() {
+    let base = 0;
+    ['hero_line1', 'hero_line3'].forEach(key => {
+        const el = document.querySelector(`.hero-title [data-i18n="${key}"]`);
+        if (!el) return;
+        const text = (I18N[currentLang] && I18N[currentLang][key]) || el.textContent;
+        el.textContent = '';
+        const segs = segmentGraphemes(text);
+        segs.forEach((g, i) => {
+            const sp = document.createElement('span');
+            sp.className = 'char-reveal';
+            sp.style.setProperty('--i', base + i);
+            sp.textContent = g === ' ' ? '\u00a0' : g;
+            el.appendChild(sp);
+        });
+        base += segs.length + 2;
+    });
+}
+
+// ===== Universal card tilt + spotlight (delegation, respects touch + reduce-motion) =====
+(() => {
+    if (window.matchMedia('(hover:none)').matches || window.matchMedia('(max-width: 991.98px)').matches) return;
+    const SEL = '.premium-card, .category-box, .review-card, .reco-card, .rv-card, .flash-card';
+    const active = new Set();
+    const reset = c => { c.style.transform=''; c.style.removeProperty('--mx'); c.style.removeProperty('--my'); active.delete(c); };
+    document.addEventListener('mousemove', e => {
+        if (document.documentElement.classList.contains('reduce-motion')) return;
+        const card = e.target.closest(SEL);
+        active.forEach(c => { if (c !== card) reset(c); });
+        if (!card) return;
+        const r = card.getBoundingClientRect();
+        const x = ((e.clientX - r.left) / r.width) * 100;
+        const y = ((e.clientY - r.top) / r.height) * 100;
+        card.style.setProperty('--mx', x+'%');
+        card.style.setProperty('--my', y+'%');
+        const rX = (y-50)/18, rY = -(x-50)/18;
+        card.style.transform = `perspective(1000px) rotateX(${rX}deg) rotateY(${rY}deg) translateY(-6px)`;
+        active.add(card);
+    }, { passive: true });
+    window.addEventListener('blur', () => active.forEach(reset));
+})();
 
 // ===== Cursor Glow =====
 (() => {
@@ -2869,8 +3107,27 @@ setTimeout(() => {
     renderFAQ();
     renderReco();
     updateBundleHint();
+    splitHeroChars();
+    initTooltips();
     AOS.refresh();
 }, 1100);
+
+// ===== Bootstrap Tooltip bootstrapper =====
+function initTooltips() {
+    if (!window.bootstrap?.Tooltip) return;
+    const reduce = document.body.classList.contains('reduce-motion') || matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
+        bootstrap.Tooltip.getInstance(el)?.dispose();
+        new bootstrap.Tooltip(el, {
+            delay: { show: 320, hide: 80 },
+            animation: !reduce,
+            customClass: 'cartify-tooltip',
+            container: 'body',
+            trigger: 'hover focus'
+        });
+    });
+}
+window.initTooltips = initTooltips;
 </script>
 </body>
 </html>
