@@ -13,6 +13,27 @@
     <meta name="theme-color" content="#8b5cf6">
     <link rel="canonical" href="https://cartify.th/">
 
+    <!-- One-time cache purge for users upgrading from SW v1/v2 (stale CSS bug) -->
+    <script>
+    (function(){
+        try {
+            var CURRENT_SW = 'cartify-v3';
+            var stored = localStorage.getItem('sw_version');
+            if (stored !== CURRENT_SW && 'caches' in window) {
+                caches.keys().then(function(keys){
+                    keys.filter(function(k){ return k.indexOf(CURRENT_SW) !== 0 }).forEach(function(k){ caches.delete(k) });
+                });
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.getRegistrations().then(function(regs){
+                        regs.forEach(function(r){ r.update().catch(function(){}) });
+                    });
+                }
+                localStorage.setItem('sw_version', CURRENT_SW);
+            }
+        } catch(e){}
+    })();
+    </script>
+
     <!-- FOUC-prevention: apply dark mode before first paint -->
     <script>
     (function(){
@@ -21,19 +42,97 @@
             var prefers = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
             var isDark = saved === 'true' || (saved === null && prefers);
             if (isDark) {
-                document.documentElement.classList.add('dark-preboot');
-                document.addEventListener('DOMContentLoaded', function(){
-                    document.body.classList.add('dark-mode');
-                    var m = document.querySelector('meta[name="theme-color"]');
-                    if (m) m.setAttribute('content', '#070a1a');
-                });
+                document.documentElement.classList.add('dark-preboot','dark-mode-early');
+                // paint body asap (before DOMContentLoaded) if body exists
+                var tryBody = function(){
+                    if (document.body) {
+                        document.body.classList.add('dark-mode');
+                        var m = document.querySelector('meta[name="theme-color"]');
+                        if (m) m.setAttribute('content', '#070a1a');
+                    } else {
+                        requestAnimationFrame(tryBody);
+                    }
+                };
+                tryBody();
             }
         } catch(e) {}
     })();
     </script>
-    <style>
-    html.dark-preboot { background: #070a1a; color-scheme: dark }
-    html.dark-preboot body { background: #070a1a; color: #e9ecf7 }
+
+    <!-- CRITICAL dark-mode rules inline — always ship with HTML, never stuck in stylesheet cache -->
+    <style id="dark-critical">
+    html.dark-preboot { background:#070a1a; color-scheme:dark }
+    html.dark-preboot body { background:#070a1a; color:#e9ecf7 }
+    /* Body aurora */
+    body.dark-mode {
+        --primary:#e9ecf7;--secondary:#a3aac8;
+        --bg-light:#0f152e;--surface:#0a0f22;--border:rgba(139,92,246,.14);
+        background:
+            radial-gradient(1100px 780px at 8% -5%, rgba(139,92,246,.12), transparent 55%),
+            radial-gradient(950px 700px at 95% 18%, rgba(236,72,153,.09), transparent 50%),
+            radial-gradient(800px 600px at 50% 110%, rgba(6,182,212,.07), transparent 55%),
+            #070a1a !important;
+        background-attachment:fixed !important;
+        color:var(--primary) !important;
+        color-scheme:dark;
+    }
+    /* Hero — MUST beat .hero-section default pink gradient */
+    body.dark-mode .hero-section,
+    body.dark-mode header.hero-section,
+    html body.dark-mode .hero-section {
+        background:
+            radial-gradient(800px 600px at 15% 20%, rgba(139,92,246,.28), transparent 60%),
+            radial-gradient(700px 500px at 85% 80%, rgba(236,72,153,.22), transparent 55%),
+            radial-gradient(600px 450px at 50% 50%, rgba(6,182,212,.12), transparent 60%),
+            linear-gradient(135deg, #0a0f22 0%, #0f152e 50%, #10061a 100%) !important;
+        color:#e9ecf7 !important;
+    }
+    body.dark-mode .hero-section .shape-1 { background:rgba(139,92,246,.22) !important }
+    body.dark-mode .hero-section .shape-2 { background:rgba(236,72,153,.18) !important }
+    body.dark-mode .hero-section .shape-3 { background:rgba(6,182,212,.14) !important }
+    body.dark-mode .hero-section .hero-title,
+    body.dark-mode .hero-section h1,
+    body.dark-mode .hero-section h2 { color:#f5f7ff !important }
+    body.dark-mode .hero-section .lead,
+    body.dark-mode .hero-section p { color:#a3aac8 !important }
+    /* Stat cards + glass cards INSIDE hero — white→dark */
+    body.dark-mode .stat-card,
+    body.dark-mode .glass-card,
+    body.dark-mode .premium-card,
+    body.dark-mode .category-box,
+    body.dark-mode .rv-card,
+    body.dark-mode .review-card {
+        background:rgba(21,27,56,.72) !important;
+        border-color:rgba(139,92,246,.18) !important;
+        color:#e9ecf7 !important;
+    }
+    body.dark-mode .stat-card .stat-label,
+    body.dark-mode .stat-card .stat-number { color:#e9ecf7 }
+    /* Nav */
+    body.dark-mode .premium-nav {
+        background:rgba(7,10,26,.78) !important;
+        border-bottom:1px solid rgba(139,92,246,.14) !important;
+    }
+    /* bg-white / bg-light Bootstrap utility — catches any element with .bg-white */
+    body.dark-mode .bg-white { background:rgba(13,19,38,.6) !important; color:#e9ecf7 !important }
+    body.dark-mode .bg-light { background:rgba(21,27,56,.45) !important; color:#e9ecf7 !important }
+    /* Sections defaulting to bg-light */
+    body.dark-mode section.bg-light,
+    body.dark-mode .feature-section,
+    body.dark-mode .testimonials {
+        background:#0a0f22 !important;
+    }
+    /* Footer */
+    body.dark-mode .footer-premium { background:linear-gradient(180deg,#070a1a 0%,#050714 100%) !important }
+    /* Inputs focus / placeholder safety */
+    body.dark-mode .form-control,
+    body.dark-mode .form-select,
+    body.dark-mode .search-box .form-control {
+        background:rgba(13,19,38,.65) !important;
+        border-color:rgba(139,92,246,.2) !important;
+        color:#e9ecf7 !important;
+    }
+    body.dark-mode .form-control::placeholder { color:#6b7493 !important }
     </style>
 
     <!-- PWA -->
@@ -79,7 +178,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
-    <link href="style.css?v=nm2" rel="stylesheet">
+    <link href="style.css?v=nm3" rel="stylesheet">
 </head>
 <body>
 
@@ -2411,7 +2510,30 @@ function launchConfetti2() {
 
 // ===== Service Worker =====
 if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').then(reg => {
+            // Force update check on every page load so CSS updates roll out immediately
+            if (reg) reg.update().catch(()=>{});
+            if (reg && reg.waiting) reg.waiting.postMessage('SKIP_WAITING');
+            if (reg) reg.addEventListener('updatefound', () => {
+                const nw = reg.installing;
+                if (nw) nw.addEventListener('statechange', () => {
+                    if (nw.state === 'installed' && navigator.serviceWorker.controller) {
+                        nw.postMessage('SKIP_WAITING');
+                    }
+                });
+            });
+        }).catch(()=>{});
+        // When the new SW takes over, reload once so fresh CSS is painted
+        let reloadedOnce = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            if (reloadedOnce) return;
+            reloadedOnce = true;
+            // reload only if we came from a previously-controlled page (avoids reload loop on first install)
+            if (sessionStorage.getItem('sw_controlled')) window.location.reload();
+        });
+        if (navigator.serviceWorker.controller) sessionStorage.setItem('sw_controlled', '1');
+    });
 }
 
 // ===== Extra i18n =====
