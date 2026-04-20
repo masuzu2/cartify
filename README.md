@@ -1,316 +1,153 @@
-<div align="center">
+# Cartify
 
-<img src="logo-color.png" alt="Cartify" width="140" />
+เว็บขายของออนไลน์หน้าเดียว ทำเป็นโปรเจคส่งมหา’ลัย คณะ IT ม.ศรีปทุม (SPU SIT)
 
-# 🛒 Cartify
+มีของ 4 หมวด — ของใช้ แฟชั่น เครื่องประดับ อุปกรณ์ IT — สลับภาษาไทย/อังกฤษได้ มีโหมดมืด ลง PWA เป็นแอปได้ และมีหน้า admin ไว้ดูยอด
 
-### พรีเมียมสโตร์ออนไลน์ · ของใช้ · แฟชั่น · เครื่องประดับ · อุปกรณ์ IT
+[![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
+[![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)
+[![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3.3-7952B3?logo=bootstrap&logoColor=white)](https://getbootstrap.com/)
+[![PWA](https://img.shields.io/badge/PWA-Ready-5A0FC8?logo=pwa&logoColor=white)](https://web.dev/progressive-web-apps/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-_Single-page e-commerce ที่เน้น UX/UI สวย ทันสมัย รองรับไทย/อังกฤษ และใช้งานจริงบนมือถือ_
-
-<br />
-
-[![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
-[![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)
-[![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-[![Bootstrap 5](https://img.shields.io/badge/Bootstrap-5.3.3-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)](https://getbootstrap.com/)
-[![PWA](https://img.shields.io/badge/PWA-Ready-5A0FC8?style=for-the-badge&logo=pwa&logoColor=white)](https://web.dev/progressive-web-apps/)
-
-<br />
-
-![GitHub stars](https://img.shields.io/github/stars/masuzu2/cartify?style=flat-square&color=ffd700)
-![GitHub forks](https://img.shields.io/github/forks/masuzu2/cartify?style=flat-square&color=blue)
-![GitHub last commit](https://img.shields.io/github/last-commit/masuzu2/cartify?style=flat-square&color=brightgreen)
-![Repo size](https://img.shields.io/github/repo-size/masuzu2/cartify?style=flat-square&color=orange)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
-
-<br />
-
-### [🌐 Live Demo](https://masuzu2.github.io/cartify/) · [📖 คู่มือ](#-เริ่มต้นใช้งาน) · [🧑‍💻 ทีมผู้พัฒนา](#-ทีมผู้พัฒนา) · [🐛 รายงานบั๊ก](https://github.com/masuzu2/cartify/issues)
-
-</div>
+**[ลองเล่นของจริง →](https://masuzu2.github.io/cartify/)**
 
 ---
 
-## 📑 สารบัญ
+## ที่มา
 
-<table>
-<tr>
-<td>
+งานชิ้นนี้ไม่มี backend จริง ข้อมูลทั้งหมดเก็บไว้ใน `localStorage` ของเบราว์เซอร์ — ลบประวัติเมื่อไรก็หายเมื่อนั้น เหมาะกับใช้เป็นเดโม่ ส่งอาจารย์ หรือเอาไปเป็น template ต่อยอดครับ
 
-- [📖 ภาพรวม](#-ภาพรวม)
-- [✨ ฟีเจอร์เด่น](#-ฟีเจอร์เด่น)
-- [🧩 เทคโนโลยีที่ใช้](#-เทคโนโลยีที่ใช้)
-- [🚀 เริ่มต้นใช้งาน](#-เริ่มต้นใช้งาน)
+## มีอะไรบ้าง
 
-</td>
-<td>
+**หน้าร้าน**
+- สินค้า 19 ตัว แบ่งหมวด กรอง/เรียงได้
+- ค้นหาด้วยเสียง (Web Speech API)
+- Flash sale นับถอยหลัง
+- Recently viewed เก็บของที่เคยดู
+- Quick view แบบ modal + ซูมรูป
+- แนะนำสินค้าใกล้เคียง
 
-- [📂 โครงสร้างไฟล์](#-โครงสร้างไฟล์)
-- [🧪 คำสั่งสำหรับทดสอบ](#-คำสั่งสำหรับทดสอบ)
-- [🧑‍💻 ทีมผู้พัฒนา](#-ทีมผู้พัฒนา)
-- [📄 License](#-license)
+**ตะกร้า / Checkout**
+- ตะกร้าเป็น drawer เลื่อนจากขวา
+- จ่าย 3 สเต็ป (สรุป → ที่อยู่ → ชำระเงิน)
+- โค้ดส่วนลด `CARTIFY15` กับ `CARTIFY20`
+- ส่งฟรีเมื่อซื้อครบ 500 บาท
+- ได้ Order ID + QR code ไว้ track
 
-</td>
-</tr>
-</table>
+**สมาชิก**
+- สมัคร/ล็อกอินได้ (เก็บใน localStorage)
+- มีหน้า profile, wishlist, ประวัติสั่งซื้อ
+- ระบบชวนเพื่อน ได้ส่วนลด 100 บาท
+- UI social login (FB / Google / Line) — เป็นแค่หน้าตา
 
----
+**UX/UI ที่ใส่มาเล่น**
+- Splash screen ตอนเปิด
+- Cursor glow, magnetic button
+- Scroll progress bar
+- Exit intent — พอเมาส์ออกจากจอจะมีวงล้อหมุนชิงส่วนลด
+- Noise texture overlay, shimmer heading
+- Dark/light mode auto ตามเวลา
 
-## 📖 ภาพรวม
+**Accessibility**
+- ปรับขนาดตัวอักษร 3 ระดับ
+- High contrast
+- ปิด animation ได้ (reduce motion)
+- เลือกธีมสีได้ 6 แบบ
+- Keyboard navigation + ARIA labels
 
-**Cartify** เป็นโปรเจคจำลอง e-commerce ที่ครอบคลุมทุกขั้นตอน ตั้งแต่ landing page, แค็ตตาล็อกสินค้า, ตะกร้า, checkout, การชำระเงิน (จำลอง), การสมัครสมาชิก, ไปจนถึง admin dashboard สำหรับดูสถิติ โดย**ไม่ใช้ backend จริง** — ทุกอย่างจำลองผ่าน `localStorage`
+**Admin (`?admin=1`)**
+- Dashboard ยอดขาย ใช้ Chart.js
+- CRUD สินค้า
+- จัดการ order
 
-<table>
-<tr>
-<td width="50%" valign="top">
+**อื่น ๆ**
+- 2 ภาษา ไทย/อังกฤษ (สลับทันทีไม่ต้อง reload)
+- PWA ติดตั้งเป็นแอปได้
+- SEO พร้อม — Schema.org, sitemap, robots, Open Graph
+- ทำตามแนวทาง PDPA
 
-### 🎯 ไฮไลต์
-- 📦 สินค้า **19+ รายการ** · 4 หมวดหมู่
-- 🌐 รองรับ **ไทย / English** สลับทันที
-- 🌓 **Dark / Light mode** + auto-detect
-- 📱 **PWA Ready** ติดตั้งเป็นแอปได้
-- 🔒 ผ่านมาตรฐาน **PDPA**
-- 🔍 **SEO** ครบ: Schema.org + sitemap + robots
+## ที่ใช้
 
-</td>
-<td width="50%" valign="top">
+| | |
+|---|---|
+| Frontend | HTML5, CSS3, Vanilla JS (ES6+) |
+| UI | Bootstrap 5.3.3 + Bootstrap Icons 1.11.3 |
+| Animation | AOS 2.3.4, CSS keyframes |
+| Chart | Chart.js 4.4.1 |
+| PWA | Service Worker (cache-first) + Web App Manifest |
+| Browser API | Web Speech, LocalStorage, Service Worker, Notification |
+| i18n | ใช้ `data-i18n` attribute เอง ไม่ได้ใช้ library |
 
-### 🧭 เหมาะสำหรับ
-- 🎓 โปรเจคส่งอาจารย์ / Portfolio
-- 🧪 ศึกษา UX/UI + Animation patterns
-- 🛠 Template เริ่มต้น e-commerce
-- 📚 เรียนรู้ Vanilla JS (ไม่มี framework)
+ไม่ได้ใช้ framework ใหญ่ ๆ อย่าง React/Vue เลย — Vanilla JS ล้วน
 
-</td>
-</tr>
-</table>
+## รันยังไง
 
----
-
-## ✨ ฟีเจอร์เด่น
-
-<table>
-<tr>
-<td width="50%" valign="top">
-
-### 🛍 หน้าร้านและสินค้า
-- Hero พร้อม **typewriter · parallax · animated stats**
-- **Flash Sale** countdown timer เรืองแสง
-- 🎤 **Voice search** (Web Speech API)
-- Filter / sort ตามหมวด / ราคา / ความนิยม
-- 🕘 **Recently Viewed** (localStorage)
-- 🔍 Product quick view modal + zoom
-- 🧠 Related products recommendations
-- 💀 Skeleton loading state
-
-### 🛒 ตะกร้าและ Checkout
-- Slide-in drawer cart
-- Checkout **3 ขั้นตอน** (สรุป → ที่อยู่ → ชำระ)
-- 🎟 โค้ดส่วนลด: `CARTIFY15`, `CARTIFY20`
-- 🚚 คำนวณค่าจัดส่งอัตโนมัติ (ฟรีเมื่อ ≥ ฿500)
-- 📋 สร้าง **Order ID + QR code** tracking
-
-### 👤 ระบบสมาชิก
-- Sign up / Log in (localStorage)
-- Social login UI (FB / Google / Line)
-- Profile dashboard · Wishlist · History
-- 🎁 **Referral system** (แชร์รับส่วนลด ฿100)
-
-</td>
-<td width="50%" valign="top">
-
-### 🎨 UX / UI
-- ✨ Splash: aurora mesh · particles · counter
-- 🧊 Team 3D tilt + spotlight effect
-- 🖱 Cursor glow · Magnetic buttons
-- 📊 Scroll progress bar ไล่ 3 สี
-- 🌈 Section heading shimmer
-- 🎞 Noise texture overlay
-- 🎡 **Exit-intent** wheel spin รับส่วนลด
-- 🔔 Real-time order notifications
-
-### ♿ Accessibility (A11y)
-- 🔤 ปรับขนาดตัวอักษร 3 ระดับ
-- 🎯 High contrast mode
-- 🚫 Reduce motion (ปิด animation ทั้งหมด)
-- 🎨 ธีมสีเลือกได้ **6 แบบ**
-- ARIA labels ครบ · Keyboard navigation
-
-### 🛡 Admin (`?admin=1`)
-- 📈 Dashboard รายได้ + order stats
-- 📊 Chart.js graphs (รายวัน / เดือน)
-- 🗂 Product CRUD
-- 📦 Order management
-
-</td>
-</tr>
-</table>
-
----
-
-## 🧩 เทคโนโลยีที่ใช้
-
-<div align="center">
-
-| หมวด | เทคโนโลยี |
-|:----:|:---------|
-| 🎨 **Frontend** | HTML5 · CSS3 (glassmorphism · aurora mesh · conic-gradient) · Vanilla JS (ES6+) |
-| 🧱 **UI Framework** | Bootstrap 5.3.3 · Bootstrap Icons 1.11.3 |
-| 🎬 **Animations** | AOS 2.3.4 · CSS keyframes · `requestAnimationFrame` |
-| 📊 **Charts** | Chart.js 4.4.1 |
-| 🌐 **Browser APIs** | Web Speech · LocalStorage · Service Worker · Notification |
-| 📱 **PWA** | Service Worker (cache-first) · Web App Manifest |
-| 🔎 **SEO** | Schema.org · Open Graph · sitemap.xml · robots.txt |
-| 🌏 **i18n** | `data-i18n` attribute (TH / EN) |
-
-</div>
-
-> 🚫 **ไม่มี backend จริง** — ทุกข้อมูลจำลองผ่าน `localStorage` (เหมาะสำหรับ demo / school project)
-
----
-
-## 🚀 เริ่มต้นใช้งาน
-
-### 1️⃣ Clone repository
+โหลดมาเปิด `index.html` ได้เลย ไม่ต้องลง dependencies
 
 ```bash
 git clone https://github.com/masuzu2/cartify.git
 cd cartify
+open index.html     # macOS
+# start index.html  # Windows
 ```
 
-### 2️⃣ เปิดไฟล์ (วิธีเร็วสุด)
+ถ้าอยากให้ PWA/Service Worker ทำงานครบ แนะนำให้รันผ่าน local server
 
 ```bash
-# macOS
-open index.html
-
-# Windows
-start index.html
-
-# Linux
-xdg-open index.html
-```
-
-> 💡 เปิด `index.html` ในเบราว์เซอร์ได้เลย **ไม่ต้อง build หรือติดตั้ง dependencies**
-
-### 3️⃣ รันผ่าน local server (แนะนำ — สำหรับ PWA)
-
-```bash
-# Python 3
 python3 -m http.server 8000
-
-# Node.js (npx)
+# หรือ
 npx serve .
-
-# PHP
-php -S localhost:8000
 ```
 
-จากนั้นเปิด <http://localhost:8000>
+แล้วเปิด <http://localhost:8000>
 
-### 4️⃣ เข้าโหมด Admin
+เข้าหน้า admin โดยต่อท้าย URL ด้วย `?admin=1`
 
-```
-http://localhost:8000/?admin=1
-```
+## วิธีลองฟีเจอร์ต่าง ๆ
 
----
+| อยากลอง | ทำยังไง |
+|---|---|
+| สลับภาษา | ปุ่มมุมขวาบน |
+| Dark mode | ไอคอนพระจันทร์ มุมขวาบน |
+| Accessibility | ไอคอน A11y ด้านซ้าย |
+| Voice search | กดไมค์ในช่องค้นหาแล้วพูด |
+| ใส่โค้ดส่วนลด | พิมพ์ `CARTIFY15` หรือ `CARTIFY20` ในตะกร้า |
+| Exit intent | ขยับเมาส์ขึ้นไปนอกจอด้านบน |
+| Admin | ต่อ `?admin=1` หลัง URL |
+| ติดตั้งเป็นแอป | ไอคอน install ใน address bar (Chrome) |
 
-## 📂 โครงสร้างไฟล์
+## โครงสร้างไฟล์
 
 ```
 cartify/
-├── 📄 index.html           Main HTML (SPA) — 2,700+ บรรทัด
-├── 🎨 style.css            Stylesheet — 950+ บรรทัด
-├── ⚙️  sw.js                Service Worker (PWA cache)
-├── 📱 manifest.json        Web App Manifest
-├── 🔎 robots.txt           SEO robots
-├── 🗺  sitemap.xml          SEO sitemap
-├── 🖼  logo-color.png       Logo (light mode)
-├── 🖼  logo-white.png       Logo (dark mode)
-├── 🖼  logo-black.png       Logo (alternate)
-├── 👤 team-1.png           รูปทีม — ชินภัทร
-├── 👤 team-2.png           รูปทีม — วรพัธน์
-├── 👤 team-3.png           รูปทีม — ชยุต
-├── 👤 team-4.png           รูปทีม — รัฐภูมิ
-└── 🎓 Logo SPU SIT 2/      โลโก้มหาวิทยาลัย
+├── index.html           HTML หลัก (~2,700 บรรทัด)
+├── style.css            CSS (~950 บรรทัด)
+├── sw.js                Service Worker
+├── manifest.json        Web App Manifest
+├── robots.txt
+├── sitemap.xml
+├── logo-color.png       logo โหมดสว่าง
+├── logo-white.png       logo โหมดมืด
+├── logo-black.png
+├── team-1.png ... team-4.png
+└── Logo SPU SIT 2/      โลโก้มหา’ลัย
 ```
 
----
+## คนทำ
 
-## 🧪 คำสั่งสำหรับทดสอบ
+นักศึกษาคณะเทคโนโลยีสารสนเทศ มหาวิทยาลัยศรีปทุม (SPU SIT)
 
-<div align="center">
+| | ชื่อ | รหัส | หน้าที่ |
+|---|---|---|---|
+| <img src="team-1.png" width="60"> | ชินภัทร บุญยศ | 68103144 | Lead Developer |
+| <img src="team-2.png" width="60"> | วรพัธน์ ด้วงแก้ว | 68043407 | UI/UX |
+| <img src="team-3.png" width="60"> | ชยุต ปัญญา | 68049541 | Product |
+| <img src="team-4.png" width="60"> | รัฐภูมิ จันเครือยิ้ม | 68029125 | Backend |
 
-| 🎯 สิ่งที่ต้องการทดสอบ | 👉 วิธี |
-|:----------------------|:--------|
-| 🌐 สลับภาษา TH / EN | คลิกปุ่มมุมขวาบน |
-| 🌙 Dark mode | คลิกไอคอนพระจันทร์ มุมขวาบน |
-| ♿ Accessibility panel | คลิกไอคอน A11y ด้านซ้าย |
-| 🎤 Voice search | คลิกไมค์ในช่องค้นหา แล้วพูด |
-| 🎟 Apply discount | ใส่ `CARTIFY15` หรือ `CARTIFY20` ในตะกร้า |
-| 🛡 Admin dashboard | เพิ่ม `?admin=1` ต่อท้าย URL |
-| 🎡 Exit intent | ขยับเมาส์ออกนอก viewport ด้านบน |
-| 📲 Install PWA | คลิกไอคอนติดตั้งใน URL bar (Chrome) |
+## License
 
-</div>
+MIT — ดูได้ที่ [LICENSE](LICENSE)
 
----
-
-## 🧑‍💻 ทีมผู้พัฒนา
-
-<div align="center">
-
-พัฒนาโดยนักศึกษาคณะเทคโนโลยีสารสนเทศ · **มหาวิทยาลัยศรีปทุม (SPU SIT)**
-
-<table>
-<tr>
-<td align="center" width="25%">
-  <img src="team-1.png" width="120" style="border-radius:50%" /><br />
-  <sub><b>ชินภัทร บุญยศ</b></sub><br />
-  <sub>🆔 68103144</sub><br />
-  <sub>🚀 Lead Developer</sub>
-</td>
-<td align="center" width="25%">
-  <img src="team-2.png" width="120" style="border-radius:50%" /><br />
-  <sub><b>วรพัธน์ ด้วงแก้ว</b></sub><br />
-  <sub>🆔 68043407</sub><br />
-  <sub>🎨 UI / UX Designer</sub>
-</td>
-<td align="center" width="25%">
-  <img src="team-3.png" width="120" style="border-radius:50%" /><br />
-  <sub><b>ชยุต ปัญญา</b></sub><br />
-  <sub>🆔 68049541</sub><br />
-  <sub>📋 Product Manager</sub>
-</td>
-<td align="center" width="25%">
-  <img src="team-4.png" width="120" style="border-radius:50%" /><br />
-  <sub><b>รัฐภูมิ จันเครือยิ้ม</b></sub><br />
-  <sub>🆔 68029125</sub><br />
-  <sub>⚙️ Backend Engineer</sub>
-</td>
-</tr>
-</table>
-
-</div>
-
----
-
-## 📄 License
-
-**MIT © 2026 Cartify Team · SPU SIT**
-
-โปรเจคนี้เป็นส่วนหนึ่งของการศึกษา คณะเทคโนโลยีสารสนเทศ มหาวิทยาลัยศรีปทุม · สงวนลิขสิทธิ์เพื่อการศึกษา
-
----
-
-<div align="center">
-
-### ⭐ ถ้าชอบโปรเจคนี้ ฝากกดดาวให้หน่อยนะครับ!
-
-<sub>Crafted with ❤️ at <b>School of Information Technology, Sripatum University</b></sub>
-
-<sub>🎓 SPU SIT · 2026</sub>
-
-</div>
+โปรเจคนี้เป็นงานส่งวิชาเรียน ใครจะเอาไปศึกษา/ดัดแปลงก็ตามสบายครับ
