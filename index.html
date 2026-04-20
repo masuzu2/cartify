@@ -1384,10 +1384,11 @@ function setLang(lang) {
 }
 
 // ===== State =====
-let cart = JSON.parse(localStorage.getItem('cartify_cart')) || [];
-let wishlist = JSON.parse(localStorage.getItem('cartify_wishlist')) || [];
-let recentlyViewed = JSON.parse(localStorage.getItem('cartify_rv')) || [];
-let activePromo = JSON.parse(localStorage.getItem('cartify_promo')) || null;
+function safeJSON(key, fallback) { try { const v = localStorage.getItem(key); return v !== null ? JSON.parse(v) ?? fallback : fallback; } catch(e) { return fallback; } }
+let cart = safeJSON('cartify_cart', []);
+let wishlist = safeJSON('cartify_wishlist', []);
+let recentlyViewed = safeJSON('cartify_rv', []);
+let activePromo = safeJSON('cartify_promo', null);
 let currentFilter = 'all';
 let currentModalProduct = null;
 let modalQty = 1;
@@ -1632,7 +1633,7 @@ function renderProducts() {
         const c = currentLang === 'en' ? p.catEN : p.catTH;
         const lowStock = p.stock <= 5;
         return `
-        <div class="col-6 col-md-4 col-lg-3 product-item fade-up" data-category="${p.cat}" data-price="${p.price}" data-reviews="${p.reviews}" style="transition-delay:${(i%4)*0.06}s">
+        <div class="col-6 col-md-4 col-lg-3 product-item fade-up" data-category="${p.cat}" data-price="${p.price}" data-reviews="${p.reviews}" data-id="${p.id}" data-stars="${p.stars}" data-stock="${p.stock}" data-sale="${p.oldPrice?'1':'0'}" style="transition-delay:${(i%4)*0.06}s">
             <article class="card premium-card h-100 border-0" itemscope itemtype="https://schema.org/Product">
                 <div class="card-img-wrapper">
                     <img src="${p.img}" alt="${n}" class="card-img-top" loading="lazy" itemprop="image"
@@ -1665,9 +1666,6 @@ function renderProducts() {
         </div>`;
     }).join('');
     document.querySelectorAll('.product-item.fade-up').forEach(el => observer.observe(el));
-    document.querySelectorAll('.btn-wishlist').forEach(btn => {
-        btn.addEventListener('click', e => { e.stopPropagation(); toggleWishlist(btn.dataset.name, btn); });
-    });
     initTiltEffect();
 }
 
@@ -1722,7 +1720,7 @@ function calcTotals() {
     let discount = 0;
     if (activePromo && subtotal > 0) {
         discount = activePromo.type === 'percent' ? subtotal * activePromo.value/100 : activePromo.value;
-        discount = Math.min(discount, subtotal);
+        discount = Math.round(Math.min(discount, subtotal) * 100) / 100;
     }
     return { subtotal, discount, total: Math.max(0, subtotal - discount) };
 }
@@ -1801,7 +1799,7 @@ function updateShipProgress(subtotal) {
 
 function addToCart(id) {
     const p = PRODUCTS[id];
-    const ex = cart.find(i => i.name === p.name);
+    const ex = cart.find(i => i.id === p.id);
     if (ex) ex.qty++;
     else cart.push({ id:p.id, name:p.name, price:p.price, img:p.img, qty:1 });
     const badge = document.getElementById('cart-badge');
@@ -1820,6 +1818,7 @@ window.clearCart = () => { if (!cart.length) return; cart=[]; activePromo=null; 
 function applyPromo() {
     const code = document.getElementById('promoInput').value.trim().toUpperCase();
     if (!code) return;
+    if (!cart.length) { showToast(currentLang==='en'?'Add items to cart first':'กรุณาเพิ่มสินค้าในตะกร้าก่อน', '', 'info'); return; }
     if (PROMO_CODES[code]) {
         activePromo = { code, ...PROMO_CODES[code] };
         localStorage.setItem('cartify_promo', JSON.stringify(activePromo));
@@ -1851,6 +1850,14 @@ function toggleWishlist(name, btn) {
     icon.className = `bi ${wished ? 'bi-heart-fill' : 'bi-heart'}`;
     btn.classList.toggle('wishlist-active', wished);
 }
+
+// Wishlist event delegation — avoids duplicate listeners on re-render
+document.getElementById('product-grid').addEventListener('click', e => {
+    const btn = e.target.closest('.btn-wishlist');
+    if (!btn) return;
+    e.stopPropagation();
+    toggleWishlist(btn.dataset.name, btn);
+});
 
 // ===== Search / Filter =====
 document.getElementById('searchInput').addEventListener('input', function() {
@@ -1979,11 +1986,15 @@ function addToRecentlyViewed(id) {
 function renderRecentlyViewed() {
     const section = document.getElementById('recentlyViewedSection');
     const grid = document.getElementById('recentlyViewed');
-    if (!recentlyViewed.length) { section.style.display = 'none'; return; }
+    const valid = recentlyViewed.filter(id => !!PRODUCTS[id]);
+    if (valid.length !== recentlyViewed.length) {
+        recentlyViewed = valid;
+        localStorage.setItem('cartify_rv', JSON.stringify(recentlyViewed));
+    }
+    if (!valid.length) { section.style.display = 'none'; return; }
     section.style.display = 'block';
-    grid.innerHTML = recentlyViewed.map(id => {
+    grid.innerHTML = valid.map(id => {
         const p = PRODUCTS[id];
-        if (!p) return '';
         const n = currentLang === 'en' ? p.nameEN : p.name;
         return `<div class="col-6 col-md-4 col-lg-2">
             <div class="rv-card" onclick="openQuickView(${id})">
@@ -2170,10 +2181,6 @@ window.simulateLogin = e => {
         }, 900);
     }
 };
-if (localStorage.getItem('cartify_login') === 'true') {
-    const btn = document.querySelector('.btn-login');
-    if (btn) btn.innerHTML = `<i class="bi bi-person-circle me-1"></i>${currentLang==='en'?'Member':'คุณลูกค้า'}`;
-}
 
 // ===== Newsletter =====
 window.handleNewsletter = e => { e.preventDefault(); showToast(currentLang==='en'?'Subscribed! ✓':'สมัครสำเร็จ! ✓', currentLang==='en'?'Thanks for subscribing':'ขอบคุณสำหรับการสมัคร', 'success'); e.target.reset(); };
@@ -2201,10 +2208,11 @@ Object.assign(I18N.en, {
 });
 
 // ===== Additional State =====
-let compareList = JSON.parse(localStorage.getItem('cartify_cmp')||'[]');
-let orders = JSON.parse(localStorage.getItem('cartify_orders')||'[]');
-let addresses = JSON.parse(localStorage.getItem('cartify_addr')||'[]');
-let user = JSON.parse(localStorage.getItem('cartify_user')||'null');
+let compareList = safeJSON('cartify_cmp', []);
+let orders = safeJSON('cartify_orders', []);
+let addresses = safeJSON('cartify_addr', []);
+let user = safeJSON('cartify_user', null);
+updateLoginBtn();
 let advFilter = { min:0, max:5000, rating:0, inStock:false, onSale:false };
 
 // ===== AOS Init =====
@@ -2281,6 +2289,7 @@ document.getElementById('reg-pass')?.addEventListener('input', function(){
     if (v.length >= 6) s++; if (v.length >= 10) s++;
     if (/[A-Z]/.test(v)) s++; if (/\d/.test(v)) s++; if (/[^A-Za-z0-9]/.test(v)) s++;
     const bar = document.getElementById('passBar');
+    if (!bar) return;
     bar.style.width = (s*20)+'%';
     bar.style.background = ['#ef4444','#f97316','#eab308','#84cc16','#22c55e'][Math.min(s-1,4)] || '#e5e7eb';
 });
@@ -2435,7 +2444,14 @@ function userSay(text) {
 }
 function renderQuickReplies() {
     const q = document.getElementById('chatQuick');
-    q.innerHTML = CHAT_REPLIES.quick[currentLang].map(r=>`<button class="quick-reply" onclick="quickReply('${r.replace(/'/g,'\\\'')}')">${r}</button>`).join('');
+    q.innerHTML = '';
+    CHAT_REPLIES.quick[currentLang].forEach(r => {
+        const btn = document.createElement('button');
+        btn.className = 'quick-reply';
+        btn.textContent = r;
+        btn.addEventListener('click', () => quickReply(r));
+        q.appendChild(btn);
+    });
 }
 window.quickReply = t => { document.getElementById('chatInput').value = t; sendChat(); };
 window.sendChat = () => {
@@ -2457,7 +2473,6 @@ window.toggleCompare = id => {
     }
     localStorage.setItem('cartify_cmp', JSON.stringify(compareList));
     renderCompareBar();
-    document.querySelectorAll(`.btn-compare`).forEach(b=>{});
     renderProducts();
 };
 function renderCompareBar() {
@@ -2535,19 +2550,6 @@ window.resetAdvFilter = () => {
     applyAdvFilter();
 };
 
-// Enhance renderProducts — add data attrs for adv filter
-const _origRender = renderProducts;
-renderProducts = function() {
-    _origRender();
-    document.querySelectorAll('.product-item').forEach((el,i) => {
-        const p = PRODUCTS[i]; if (!p) return;
-        el.dataset.id = p.id; el.dataset.stars = p.stars; el.dataset.stock = p.stock; el.dataset.sale = p.oldPrice ? '1':'0';
-    });
-    // update compare button state
-    document.querySelectorAll('.btn-compare').forEach(b => {
-        const id = [...b.closest('.product-item').querySelectorAll('[onclick*="toggleCompare"]')].length;
-    });
-};
 
 // ===== Admin Dashboard =====
 function checkAdmin() {
@@ -2949,7 +2951,8 @@ function renderReco() {
     recentlyViewed.forEach(id => { const p = PRODUCTS[id]; if (p) cats[p.cat] = (cats[p.cat]||0)+1; });
     const topCat = Object.entries(cats).sort((a,b)=>b[1]-a[1])[0]?.[0];
     if (!topCat) return;
-    const reco = PRODUCTS.filter(p => p.cat === topCat && !recentlyViewed.includes(p.id)).slice(0,4);
+    const rvSet = new Set(recentlyViewed);
+    const reco = PRODUCTS.filter(p => p.cat === topCat && !rvSet.has(p.id)).slice(0,4);
     if (!reco.length) return;
     document.getElementById('recoSection').style.display = 'block';
     document.getElementById('recoGrid').innerHTML = reco.map(p => {

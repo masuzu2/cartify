@@ -46,12 +46,12 @@ self.addEventListener('fetch', e => {
     if (isAsset(req, req.destination)) {
         e.respondWith(
             caches.match(req).then(cached => cached || fetch(req).then(resp => {
-                if (resp && resp.status === 200) {
+                if (resp && resp.ok && resp.type !== 'opaque') {
                     const clone = resp.clone();
                     caches.open(STATIC_CACHE).then(c => c.put(req, clone).catch(() => {}));
                 }
                 return resp;
-            }).catch(() => cached))
+            }).catch(() => cached || new Response('', { status: 404 })))
         );
         return;
     }
