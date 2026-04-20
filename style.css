@@ -877,3 +877,504 @@ section.bg-light > .container{position:relative;z-index:1}
     .hero-sparkles i{font-size:.9rem!important;opacity:.18}
     section.bg-light::before,section.bg-light::after{width:200px;height:200px}
 }
+
+/* ============================================================
+   PREMIUM NIGHT MODE v2 — full-coverage dark theme
+   - 4-level surface ramp, purple-tinted borders, soft-white text
+   - Ambient aurora body bg, glass cards, colored glow accents
+   - Respects --accent theme picker (purple / blue / green / orange / rose)
+   - Rules here are placed last so they win the cascade
+   ============================================================ */
+
+/* 1. Tokens — override older flat colors */
+body.dark-mode {
+    --primary: #e9ecf7;
+    --secondary: #a3aac8;
+    --bg-0: #070a1a;
+    --bg-light: #0f152e;
+    --surface: #0a0f22;
+    --surface-2: #151b38;
+    --surface-3: #1c2449;
+    --border: rgba(139,92,246,.14);
+    --border-strong: rgba(139,92,246,.3);
+    --shadow-sm: 0 4px 12px rgba(0,0,0,.45);
+    --shadow-md: 0 12px 32px rgba(0,0,0,.55);
+    --shadow-lg: 0 24px 64px rgba(0,0,0,.6);
+    color-scheme: dark;
+}
+
+/* 2. Body — layered aurora fixed under content */
+body.dark-mode {
+    background:
+        radial-gradient(1100px 780px at 8% -5%, rgba(139,92,246,.12), transparent 55%),
+        radial-gradient(950px 700px at 95% 18%, rgba(236,72,153,.09), transparent 50%),
+        radial-gradient(800px 600px at 50% 110%, rgba(6,182,212,.07), transparent 55%),
+        #070a1a;
+    background-attachment: fixed;
+    color: var(--primary);
+}
+
+/* 3. Selection + scrollbar */
+body.dark-mode ::selection { background: rgba(139,92,246,.45); color: #fff }
+body.dark-mode ::-moz-selection { background: rgba(139,92,246,.45); color: #fff }
+body.dark-mode::-webkit-scrollbar, body.dark-mode *::-webkit-scrollbar { width: 10px; height: 10px }
+body.dark-mode::-webkit-scrollbar-track, body.dark-mode *::-webkit-scrollbar-track { background: rgba(13,19,38,.5) }
+body.dark-mode::-webkit-scrollbar-thumb, body.dark-mode *::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--accent), var(--accent2));
+    border-radius: 10px;
+    border: 2px solid rgba(7,10,26,.9);
+}
+body.dark-mode::-webkit-scrollbar-thumb:hover, body.dark-mode *::-webkit-scrollbar-thumb:hover { filter: brightness(1.2) }
+
+/* 4. Nav — glass */
+body.dark-mode .premium-nav {
+    background: rgba(7,10,26,.72);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border-bottom: 1px solid rgba(139,92,246,.12);
+    box-shadow: 0 1px 0 rgba(255,255,255,.04), 0 8px 32px rgba(0,0,0,.35);
+}
+body.dark-mode .premium-nav.scrolled {
+    background: rgba(7,10,26,.88);
+    border-bottom-color: rgba(139,92,246,.22);
+}
+body.dark-mode .announcement-bar {
+    background: linear-gradient(90deg, rgba(139,92,246,.16), rgba(236,72,153,.12), rgba(139,92,246,.16));
+    border-bottom: 1px solid rgba(139,92,246,.18);
+    color: #e9ecf7;
+}
+body.dark-mode .announcement-bar a { color: #fff; text-shadow: 0 0 8px rgba(139,92,246,.5) }
+
+/* 5. Hero — richer aurora (!important — beats in-file earlier rule AND any inline) */
+body.dark-mode .hero-section,
+body.dark-mode header.hero-section {
+    background:
+        radial-gradient(800px 600px at 15% 20%, rgba(139,92,246,.28), transparent 60%),
+        radial-gradient(700px 500px at 85% 80%, rgba(236,72,153,.22), transparent 55%),
+        radial-gradient(600px 450px at 50% 50%, rgba(6,182,212,.12), transparent 60%),
+        linear-gradient(135deg, #0a0f22 0%, #0f152e 50%, #10061a 100%) !important;
+    color: #e9ecf7;
+}
+body.dark-mode .hero-section .shape-1 { background: rgba(139,92,246,.22) !important }
+body.dark-mode .hero-section .shape-2 { background: rgba(236,72,153,.18) !important }
+body.dark-mode .hero-section .shape-3 { background: rgba(6,182,212,.14) !important }
+body.dark-mode .hero-section .hero-title,
+body.dark-mode .hero-section .hero-title span:not(.gradient-text):not(.typewriter-wrap):not(.typewriter-cursor) { color: #f5f7ff !important }
+body.dark-mode .hero-section .lead { color: #a3aac8 !important }
+
+/* 6. Glass cards — uniform treatment */
+body.dark-mode .glass-card,
+body.dark-mode .stat-card,
+body.dark-mode .premium-card,
+body.dark-mode .category-box,
+body.dark-mode .rv-card,
+body.dark-mode .review-card,
+body.dark-mode .newsletter-card,
+body.dark-mode .admin-kpi,
+body.dark-mode .admin-card,
+body.dark-mode .cart-dropdown,
+body.dark-mode .custom-dropdown {
+    background: rgba(21,27,56,.7) !important;
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    border: 1px solid rgba(139,92,246,.16) !important;
+    box-shadow: 0 8px 28px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.04);
+}
+body.dark-mode .premium-card:hover,
+body.dark-mode .review-card:hover,
+body.dark-mode .rv-card:hover,
+body.dark-mode .category-box:hover {
+    border-color: rgba(139,92,246,.4) !important;
+    box-shadow: 0 18px 48px rgba(0,0,0,.55), 0 0 0 1px rgba(139,92,246,.25), 0 0 48px rgba(139,92,246,.2) !important;
+}
+
+/* 7. Inputs — glass with focus glow */
+body.dark-mode .form-control,
+body.dark-mode .form-select,
+body.dark-mode .search-box .form-control,
+body.dark-mode .promo-input,
+body.dark-mode .chat-input-wrap input {
+    background: rgba(13,19,38,.65) !important;
+    border: 1px solid rgba(139,92,246,.2) !important;
+    color: #e9ecf7 !important;
+    backdrop-filter: blur(8px);
+}
+body.dark-mode .form-control:focus,
+body.dark-mode .form-select:focus,
+body.dark-mode .search-box .form-control:focus,
+body.dark-mode .promo-input:focus,
+body.dark-mode .chat-input-wrap input:focus {
+    background: rgba(13,19,38,.85) !important;
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 4px rgba(139,92,246,.18), 0 4px 16px rgba(139,92,246,.2) !important;
+    outline: none;
+}
+body.dark-mode .form-control::placeholder,
+body.dark-mode .form-select::placeholder,
+body.dark-mode .chat-input-wrap input::placeholder { color: #6b7493 !important; opacity: 1 }
+body.dark-mode input:-webkit-autofill,
+body.dark-mode textarea:-webkit-autofill,
+body.dark-mode select:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px rgba(13,19,38,.95) inset !important;
+    -webkit-text-fill-color: #e9ecf7 !important;
+    caret-color: #e9ecf7;
+    border-color: rgba(139,92,246,.3) !important;
+}
+
+/* 8. Buttons */
+body.dark-mode .btn-dark,
+body.dark-mode .btn-accent {
+    background: var(--accent-grad) !important;
+    border: none !important;
+    box-shadow: 0 6px 20px rgba(139,92,246,.35), inset 0 1px 0 rgba(255,255,255,.08);
+    color: #fff !important;
+}
+body.dark-mode .btn-dark:hover,
+body.dark-mode .btn-accent:hover {
+    box-shadow: 0 10px 28px rgba(139,92,246,.5), 0 0 40px rgba(236,72,153,.3), inset 0 1px 0 rgba(255,255,255,.12);
+    transform: translateY(-2px);
+}
+body.dark-mode .btn-outline-dark,
+body.dark-mode .btn-outline-secondary {
+    background: rgba(21,27,56,.5) !important;
+    border: 1px solid rgba(139,92,246,.3) !important;
+    color: #e9ecf7 !important;
+    backdrop-filter: blur(8px);
+}
+body.dark-mode .btn-outline-dark:hover,
+body.dark-mode .btn-outline-secondary:hover {
+    background: rgba(139,92,246,.14) !important;
+    border-color: var(--accent) !important;
+    color: #fff !important;
+    box-shadow: 0 0 24px rgba(139,92,246,.3);
+}
+
+/* 9. Filter / sort / pill-style controls */
+body.dark-mode .btn-filter,
+body.dark-mode .sort-select,
+body.dark-mode .rp,
+body.dark-mode .quick-reply,
+body.dark-mode .adv-filter {
+    background: rgba(13,19,38,.6) !important;
+    border-color: rgba(139,92,246,.18) !important;
+    color: #c6cbe0 !important;
+    backdrop-filter: blur(8px);
+}
+body.dark-mode .btn-filter:hover,
+body.dark-mode .rp:hover,
+body.dark-mode .quick-reply:hover {
+    background: rgba(139,92,246,.15) !important;
+    border-color: var(--accent) !important;
+    color: #fff !important;
+}
+body.dark-mode .btn-filter.active {
+    background: var(--accent-grad) !important;
+    border-color: transparent !important;
+    box-shadow: 0 4px 14px rgba(139,92,246,.4);
+    color: #fff !important;
+}
+
+/* 10. Modal — glass with strong shadow */
+body.dark-mode .modal-content {
+    background: rgba(13,19,38,.92) !important;
+    backdrop-filter: blur(24px) saturate(160%);
+    border: 1px solid rgba(139,92,246,.22) !important;
+    box-shadow: 0 24px 80px rgba(0,0,0,.7), 0 0 0 1px rgba(139,92,246,.15);
+    color: #e9ecf7;
+}
+body.dark-mode .modal-backdrop.show { opacity: .72 }
+body.dark-mode .modal-header,
+body.dark-mode .modal-footer { border-color: rgba(139,92,246,.14) !important }
+
+/* 11. Toast / dropdowns */
+body.dark-mode .sp-toast {
+    background: rgba(21,27,56,.9) !important;
+    border: 1px solid rgba(139,92,246,.25) !important;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 12px 36px rgba(0,0,0,.6);
+    color: #e9ecf7 !important;
+}
+body.dark-mode .custom-dropdown .dropdown-item { color: #e9ecf7 }
+body.dark-mode .custom-dropdown .dropdown-item:hover {
+    background: rgba(139,92,246,.14) !important;
+    color: #fff;
+}
+
+/* 12. Sections — subtle aurora instead of flat */
+body.dark-mode .testimonials,
+body.dark-mode section.bg-light {
+    background:
+        radial-gradient(600px 400px at 20% 10%, rgba(139,92,246,.08), transparent 60%),
+        radial-gradient(500px 350px at 80% 90%, rgba(236,72,153,.06), transparent 55%),
+        #0a0f22 !important;
+}
+body.dark-mode .feature-section {
+    background: #0a0f22 !important;
+    border-top: 1px solid rgba(139,92,246,.1);
+}
+
+/* 13. Footer */
+body.dark-mode .footer-premium {
+    background: linear-gradient(180deg, #070a1a 0%, #050714 100%) !important;
+    border-top: 1px solid rgba(139,92,246,.15) !important;
+}
+
+/* 14. Category icons — glow on hover */
+body.dark-mode .cat-icon {
+    background: rgba(139,92,246,.1);
+    border: 1px solid rgba(139,92,246,.25);
+    color: #e9ecf7;
+    box-shadow: inset 0 0 20px rgba(139,92,246,.08);
+}
+body.dark-mode .category-box:hover .cat-icon {
+    background: var(--accent-grad);
+    color: #fff;
+    box-shadow: 0 0 28px rgba(139,92,246,.5);
+    border-color: transparent;
+}
+
+/* 15. Icon buttons / qty / social */
+body.dark-mode .btn-icon {
+    background: rgba(21,27,56,.85) !important;
+    color: #e9ecf7 !important;
+    border: 1px solid rgba(139,92,246,.18);
+    backdrop-filter: blur(8px);
+}
+body.dark-mode .btn-icon:hover {
+    background: var(--accent-grad) !important;
+    color: #fff !important;
+    border-color: transparent;
+    box-shadow: 0 0 24px rgba(139,92,246,.45);
+}
+body.dark-mode .qty-btn,
+body.dark-mode .social-btn {
+    background: rgba(21,27,56,.7) !important;
+    border: 1px solid rgba(139,92,246,.18) !important;
+    color: #e9ecf7 !important;
+}
+body.dark-mode .qty-btn:hover,
+body.dark-mode .social-btn:hover {
+    background: var(--accent-grad) !important;
+    color: #fff !important;
+    border-color: transparent !important;
+    box-shadow: 0 0 20px rgba(139,92,246,.4);
+}
+
+/* 16. Lang toggle / dark toggle */
+body.dark-mode .lang-toggle {
+    background: rgba(13,19,38,.6);
+    border-color: rgba(139,92,246,.22);
+    backdrop-filter: blur(8px);
+}
+body.dark-mode .dark-toggle {
+    background: linear-gradient(135deg, var(--accent), var(--accent2)) !important;
+    border-color: transparent !important;
+    box-shadow: 0 0 16px rgba(139,92,246,.4), inset 0 1px 0 rgba(255,255,255,.2);
+}
+
+/* 17. Chat window / bubbles */
+body.dark-mode .chat-window {
+    background: rgba(13,19,38,.92) !important;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(139,92,246,.22);
+    box-shadow: 0 20px 60px rgba(0,0,0,.6);
+}
+body.dark-mode .chat-body { background: transparent !important }
+body.dark-mode .chat-msg.bot .chat-bubble {
+    background: rgba(21,27,56,.85) !important;
+    border: 1px solid rgba(139,92,246,.15);
+    color: #e9ecf7 !important;
+}
+body.dark-mode .chat-msg.user .chat-bubble {
+    background: var(--accent-grad) !important;
+    box-shadow: 0 4px 14px rgba(139,92,246,.35);
+    color: #fff !important;
+}
+
+/* 18. Tables */
+body.dark-mode .admin-card .table,
+body.dark-mode .cmp-table,
+body.dark-mode .table {
+    --bs-table-bg: transparent;
+    --bs-table-color: #e9ecf7;
+    --bs-table-border-color: rgba(139,92,246,.12);
+    --bs-table-striped-bg: rgba(139,92,246,.05);
+    --bs-table-hover-bg: rgba(139,92,246,.1);
+    color: #e9ecf7;
+}
+body.dark-mode .cmp-table th { background: rgba(13,19,38,.7) !important; color: #e9ecf7 !important }
+
+/* 19. Typography */
+body.dark-mode h1, body.dark-mode h2, body.dark-mode h3,
+body.dark-mode h4, body.dark-mode h5, body.dark-mode h6 { color: #f5f7ff }
+body.dark-mode .text-muted { color: #8891b0 !important }
+body.dark-mode .text-dark { color: #e9ecf7 !important }
+body.dark-mode .text-secondary { color: #a3aac8 !important }
+body.dark-mode .text-body { color: #c6cbe0 !important }
+body.dark-mode .gradient-text { filter: brightness(1.15) }
+
+/* 20. Borders & dividers */
+body.dark-mode .border-top { border-top-color: rgba(139,92,246,.14) !important }
+body.dark-mode .border-bottom { border-bottom-color: rgba(139,92,246,.14) !important }
+body.dark-mode .border, body.dark-mode .border-start, body.dark-mode .border-end { border-color: rgba(139,92,246,.14) !important }
+body.dark-mode hr, body.dark-mode .dropdown-divider { border-color: rgba(139,92,246,.14); background: rgba(139,92,246,.14) }
+
+/* 21. Profile / order / address */
+body.dark-mode .profile-stat,
+body.dark-mode .order-card,
+body.dark-mode .addr-card,
+body.dark-mode .track-header,
+body.dark-mode .loyalty-progress,
+body.dark-mode .order-id-box {
+    background: rgba(21,27,56,.6) !important;
+    border: 1px solid rgba(139,92,246,.15) !important;
+    backdrop-filter: blur(8px);
+}
+
+/* 22. Payment buttons */
+body.dark-mode .payment-method-btn {
+    background: rgba(13,19,38,.5) !important;
+    border: 1.5px solid rgba(139,92,246,.2) !important;
+    color: #e9ecf7 !important;
+}
+body.dark-mode .payment-method-btn:hover,
+body.dark-mode .payment-method-btn.active {
+    border-color: var(--accent) !important;
+    background: rgba(139,92,246,.12) !important;
+    box-shadow: 0 0 20px rgba(139,92,246,.25);
+}
+
+/* 23. Steps / skeleton / size */
+body.dark-mode .step-dot.pending {
+    background: rgba(21,27,56,.6) !important;
+    border-color: rgba(139,92,246,.2) !important;
+    color: #a3aac8 !important;
+}
+body.dark-mode .skeleton {
+    background: linear-gradient(90deg, rgba(21,27,56,.6) 25%, rgba(139,92,246,.15) 50%, rgba(21,27,56,.6) 75%) !important;
+    background-size: 200% 100% !important;
+}
+body.dark-mode .size-btn {
+    background: rgba(13,19,38,.5);
+    border-color: rgba(139,92,246,.22);
+    color: #e9ecf7;
+}
+body.dark-mode .size-btn.active {
+    background: var(--accent-grad);
+    border-color: transparent;
+    color: #fff;
+    box-shadow: 0 0 20px rgba(139,92,246,.4);
+}
+
+/* 24. Prize box / bundle / reference */
+body.dark-mode .prize-box {
+    background: linear-gradient(135deg, rgba(139,92,246,.18), rgba(236,72,153,.18)) !important;
+    border-color: var(--accent) !important;
+    color: #e9ecf7;
+}
+body.dark-mode .prize-box code { background: rgba(7,10,26,.7); color: var(--accent) }
+body.dark-mode .ref-box {
+    background: linear-gradient(135deg, rgba(139,92,246,.12), rgba(236,72,153,.12));
+    border-color: rgba(139,92,246,.35);
+    color: #e9ecf7;
+}
+
+/* 25. A11y panel */
+body.dark-mode .a11y-panel {
+    background: rgba(13,19,38,.92) !important;
+    border: 1px solid rgba(139,92,246,.22) !important;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 20px 60px rgba(0,0,0,.6);
+}
+body.dark-mode .a11y-group { border-color: rgba(139,92,246,.12) }
+body.dark-mode .a11y-fab { background: var(--accent-grad); box-shadow: 0 8px 24px rgba(139,92,246,.4) }
+
+/* 26. Exit intent popup */
+body.dark-mode #exitIntent { background: rgba(5,7,20,.85) !important }
+body.dark-mode .ei-box {
+    background: rgba(13,19,38,.96);
+    border: 1px solid rgba(139,92,246,.22);
+    box-shadow: 0 24px 80px rgba(0,0,0,.7);
+}
+
+/* 27. Progress bar glow */
+body.dark-mode #progress-bar { box-shadow: 0 0 10px rgba(139,92,246,.6), 0 0 20px rgba(236,72,153,.4) }
+
+/* 28. Voice button */
+body.dark-mode .voice-btn { color: #a3aac8 }
+body.dark-mode .voice-btn:hover { background: rgba(139,92,246,.15); color: var(--accent) }
+
+/* 29. bg-white / bg-light Bootstrap utilities */
+body.dark-mode .bg-white { background: rgba(13,19,38,.6) !important }
+body.dark-mode .bg-light { background: rgba(21,27,56,.45) !important }
+body.dark-mode .bg-accent-subtle { background: rgba(139,92,246,.12) !important }
+
+/* 30. Close button (Bootstrap) */
+body.dark-mode .btn-close { filter: invert(1) brightness(1.2) }
+
+/* 31. Links */
+body.dark-mode a:not(.btn):not(.nav-link):not(.dropdown-item):not(.navbar-brand) { color: #c4a6ff }
+body.dark-mode a:not(.btn):not(.nav-link):not(.dropdown-item):not(.navbar-brand):hover {
+    color: #fff;
+    text-shadow: 0 0 8px rgba(139,92,246,.4);
+}
+
+/* 32. Tier bar base */
+body.dark-mode .tier-bar { background: rgba(139,92,246,.15) }
+
+/* 33. Floating labels */
+body.dark-mode .form-floating label { color: #8891b0 }
+
+/* 34. Mobile nav collapse */
+body.dark-mode .navbar-collapse {
+    background: rgba(13,19,38,.95) !important;
+    border: 1px solid rgba(139,92,246,.18) !important;
+    backdrop-filter: blur(20px);
+}
+
+/* 35. Feature icons glow */
+body.dark-mode .feature-icon-wrapper {
+    background: rgba(139,92,246,.08);
+    box-shadow: inset 0 0 24px rgba(139,92,246,.1), 0 0 32px rgba(139,92,246,.15);
+}
+
+/* 36. Badges neutralized */
+body.dark-mode .badge.bg-light { background: rgba(139,92,246,.18) !important; color: #e9ecf7 !important }
+body.dark-mode .badge.bg-secondary { background: rgba(139,92,246,.22) !important }
+
+/* 37. High-contrast combo guard (HC + dark — keep WCAG) */
+.high-contrast.dark-mode { --primary: #fff; --secondary: #e5e7eb }
+.high-contrast.dark-mode .form-control,
+.high-contrast.dark-mode .form-select { color: #fff !important; border-color: #fff !important }
+
+/* 38. Smooth theme transition — enabled only during toggle via .theme-transitioning */
+.theme-transitioning,
+.theme-transitioning *,
+.theme-transitioning *::before,
+.theme-transitioning *::after {
+    transition:
+        background-color .42s cubic-bezier(.4,0,.2,1),
+        background .42s cubic-bezier(.4,0,.2,1),
+        color .32s cubic-bezier(.4,0,.2,1),
+        border-color .42s cubic-bezier(.4,0,.2,1),
+        box-shadow .38s cubic-bezier(.4,0,.2,1),
+        fill .32s, stroke .32s !important;
+}
+.reduce-motion.theme-transitioning,
+.reduce-motion .theme-transitioning * { transition-duration: .01ms !important }
+
+/* 39. Dark toggle thumb icon readable */
+body.dark-mode .dark-toggle-thumb { background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.4) }
+
+/* 40. Ensure code/pre readable */
+body.dark-mode code, body.dark-mode pre {
+    background: rgba(7,10,26,.6);
+    color: #e9ecf7;
+    border: 1px solid rgba(139,92,246,.14);
+    border-radius: 6px;
+}
+
+/* 41. Images — subtle shadow so white product bg integrates */
+body.dark-mode img:not(.no-dim):not([class*="logo"]):not(.splash-logo):not(.nav-logo):not(.footer-logo) {
+    filter: brightness(.95);
+}
